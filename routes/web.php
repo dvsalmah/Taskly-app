@@ -1,38 +1,48 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\VitalTaskController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', fn() => redirect()->route('login'));
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // My Task
+    Route::get('/my-task',                   [TaskController::class, 'index'])->name('my-task');
+    Route::post('/my-task',                  [TaskController::class, 'store'])->name('task.store');
+    Route::patch('/my-task/{task}',          [TaskController::class, 'update'])->name('task.update');
+    Route::delete('/my-task/{task}',         [TaskController::class, 'destroy'])->name('task.destroy');
+    Route::patch('/my-task/{task}/status',   [TaskController::class, 'updateStatus'])->name('task.status');
+
+    // Vital Task
+    Route::get('/vital-task', [VitalTaskController::class, 'index'])->name('vital-task');
+
+    // Task Categories
+    Route::get('/task-category',              [CategoryController::class, 'index'])->name('task-category');
+    Route::post('/task-category',             [CategoryController::class, 'store'])->name('category.store');
+    Route::delete('/task-category/{category}',[CategoryController::class, 'destroy'])->name('category.destroy');
+
+    // Help
+    Route::get('/help', [HelpController::class, 'index'])->name('help');
+
+    // Profile
+    Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile',   [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
