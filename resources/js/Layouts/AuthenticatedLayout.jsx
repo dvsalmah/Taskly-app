@@ -6,15 +6,16 @@ export default function AuthenticatedLayout({ children }) {
     const { auth } = usePage().props;
 
     return (
-        <div className="flex min-h-screen bg-fore font-sans">
-            {/* Fixed sidebar */}
+        <div className="min-h-screen bg-fore font-sans">
             <Sidebar />
 
-            {/* Main area — offset by sidebar width */}
-            <div className="ml-[220px] flex-1 flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen" style={{ marginLeft: '224px' }}>
                 <Navbar user={auth?.user} />
-                <main className="flex-1 p-7">
-                    {children}
+
+                <main className="flex-1 pl-6 bg-[#f0f2f8]">
+                    <section className='justify-center items-center '>
+                        {children}
+                    </section>
                 </main>
             </div>
         </div>
