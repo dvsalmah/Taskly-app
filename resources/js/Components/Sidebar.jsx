@@ -83,10 +83,9 @@ export default function Sidebar() {
     const { url } = usePage();
     const [showLogout, setShowLogout] = useState(false);
 
-    // Simple, reliable active check — compares pathname only (no route() needed)
-    const isActive = (path) => {
-        const currentPath = url.split('?')[0];
-        return currentPath === path || currentPath.startsWith(path + '/');
+    const isActive = (path) => { 
+        const currentPath = url.split('?')[0]; 
+        return currentPath === path || currentPath.startsWith(path + '/'); 
     };
 
     // POST to /logout using router directly with a plain string path

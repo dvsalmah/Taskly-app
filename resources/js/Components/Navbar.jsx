@@ -88,7 +88,7 @@ export default function Navbar({ user }) {
         <header className="bg-surface border-t-[4px] border-t-pink-dark border-b border-b-border h-[64px] w-full flex items-center justify-between px-8 sticky top-0 z-10">
 
             {/* Logo */}
-            <Link href={route('dashboard')} className="flex items-center shrink-0 no-underline">
+            <Link href="/dashboard" className="flex items-center shrink-0 no-underline">
                 <img
                     src="/assets/taskly-HD.png"
                     alt="Taskly"
@@ -126,7 +126,7 @@ export default function Navbar({ user }) {
                     {calOpen && <MiniCalendar />}
                 </div>
 
-                <Link href={route('profile.edit')} title='My Profile' className="flex items-center ml-1 no-underline group rounded-full outline-none">
+                <Link href="/profile" title='My Profile' className="flex items-center ml-1 no-underline group rounded-full outline-none">
                     <img
                         src={photoUrl}
                         alt="Profile"
