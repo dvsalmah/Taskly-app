@@ -191,7 +191,7 @@ export default function ProfileEdit({ user }) {
         Object.entries(form).forEach(([k, v]) => data.append(k, v));
         if (photoFile) data.append('photo', photoFile);
 
-        router.post(route('profile.update'), data, {
+        router.post('/profile', data, {
             forceFormData: true,
             onSuccess: () => {
                 showToast('success', 'Profile updated successfully!');

@@ -4,7 +4,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Badge from '@/Components/Badge';
 import Modal from '@/Components/Modal';
 
-/* ── Deadline countdown (pure JS) ───────────────────────── */
 function deadlineLabel(dl) {
     if (!dl) return '';
     const diff = new Date(dl.replace(' ', 'T')) - Date.now();
@@ -47,7 +46,7 @@ function TaskCard({ task, onClick }) {
     return (
         <div onClick={onClick}
              className="bg-surface rounded-[10px] p-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.07)]
-                        flex flex-col gap-2.5 cursor-pointer transition-all duration-200
+                        flex flex-col gap-2.5 pl-6 cursor-pointer transition-all duration-200
                         border-t-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5
                         relative overflow-hidden"
              style={{ borderTopColor: topColor }}>
@@ -111,9 +110,9 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
         e.preventDefault();
         const payload = { ...data, deadline: data.deadline || null, category_id: data.category_id || null };
         if (mode === 'add') {
-            router.post(route('task.store'), payload, { onSuccess: onClose });
+            router.post('/my-task', payload, { onSuccess: onClose });
         } else {
-            router.patch(route('task.update', task.id), payload, { onSuccess: onClose });
+            router.patch(`/my-task/${task.id}`, payload, { onSuccess: onClose });
         }
     };
 
@@ -201,12 +200,12 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
     const labelCls = 'text-[11px] font-semibold uppercase text-muted tracking-wide';
 
     const handleStatusChange = (e) => {
-        router.patch(route('task.status', task.id), { status: e.target.value }, { preserveScroll: true });
+        router.patch(`/my-task/${task.id}/status`, { status: e.target.value }, { preserveScroll: true });
     };
 
     const handleDelete = () => {
         if (confirm('Delete this task?')) {
-            router.delete(route('task.destroy', task.id), { onSuccess: onClose });
+            router.delete(`/my-task/${task.id}`, { onSuccess: onClose });
         }
     };
 

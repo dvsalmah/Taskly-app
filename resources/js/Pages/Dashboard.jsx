@@ -81,7 +81,7 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
                         {todoTasks.length === 0 ? (
                             <div className="text-center py-8 text-muted text-[13px]">
                                 Congratulations! You have completed all your tasks!{' '}
-                                <Link href={`${route('my-task')}`}
+                                <Link href="/my-task"
                                     className="text-pink-dark font-semibold no-underline hover:underline">
                                     Add more
                                 </Link>
@@ -91,7 +91,7 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
                                 {todoTasks.map(t => <TaskRow key={t.id} task={t} />)}
                                 {totalTodo > 5 && (
                                     <p className="text-center pl-4 mt-3 text-[12px]">
-                                        <Link href={`${route('my-task')}`}
+                                        <Link href="/my-task"
                                             className="text-pink-dark no-underline hover:underline">
                                             View all tasks
                                         </Link>
@@ -142,7 +142,7 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
                         {stats.total === 0 ? (
                             <div className="text-center py-8 text-muted text-[13px]">
                                 No tasks yet.{' '}
-                                <Link href={`${route('my-task')}`}
+                                <Link href="/my-task"
                                     className="text-pink-dark font-semibold no-underline hover:underline">
                                     Add one!
                                 </Link>

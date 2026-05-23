@@ -34,7 +34,7 @@ function VitalCard({ task }) {
     }, [task.deadline]);
 
     const handleStatus = (e) => {
-        router.patch(route('task.status', task.id), { status: e.target.value }, { preserveScroll: true });
+        router.patch(`/my-task/${task.id}/status`, { status: e.target.value }, { preserveScroll: true });
     };
 
     return (
@@ -74,7 +74,7 @@ function VitalCard({ task }) {
                     <option value="in_progress">In Progress</option>
                     <option value="completed">Completed</option>
                 </select>
-                <Link href={route('my-task')}
+                <Link href="/my-task"
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-semibold
                                  text-muted border border-border no-underline hover:bg-fore hover:text-ink transition-colors">
                     <img src="/assets/edit.svg" alt="" className="w-4 h-4" /> Edit
@@ -106,7 +106,7 @@ export default function VitalTask({ vitalTasks }) {
                         {vitalTasks.length} vital task{vitalTasks.length !== 1 ? 's' : ''}
                     </p>
                 </div>
-                <Link href={route('my-task')}
+                <Link href="/my-task"
                       className="inline-flex items-center gap-1.5 px-[18px] py-2.5 rounded-lg text-[13px] font-semibold
                                  text-muted border border-border no-underline hover:bg-fore hover:text-ink transition-colors">
                     <img src="/assets/left.svg" alt="" className="w-4 h-4" /> Back to My Task

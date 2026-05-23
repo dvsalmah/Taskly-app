@@ -32,7 +32,7 @@ function AddCategoryForm({ onClose }) {
     const submit = (e) => {
         e.preventDefault();
         setBusy(true);
-        router.post(route('category.store'), { name, color }, {
+        router.post('/task-category', { name, color }, {
             onSuccess: onClose,
             onFinish: () => setBusy(false),
         });
@@ -89,7 +89,7 @@ export default function TaskCategory({ categories }) {
 
     const handleDelete = (cat) => {
         if (confirm(`Delete category "${cat.name}"? Tasks will keep their data.`)) {
-            router.delete(route('category.destroy', cat.id));
+            router.delete(`/task-category/${cat.id}`);
         }
     };
 
