@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
+    public $timestamps = false;
     protected $fillable = [
         'username',
         'first_name',
@@ -26,6 +26,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'full_name',
+        'photo_url',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -36,12 +41,12 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'username', 'username');
     }
 
     public function categories()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class, 'username', 'username');
     }
 
     /**

@@ -13,7 +13,6 @@ class VitalTaskController extends Controller
         $user       = $request->user();
         $categories = $user->categories()->orderBy('name')->get();
 
-        // Load all non-completed high-priority tasks then filter vital ones
         $vitalTasks = $user->tasks()
             ->with('category')
             ->where('priority', 'high')

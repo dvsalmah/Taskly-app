@@ -12,8 +12,8 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $user  = $request->user();
-        $tasks = $user->tasks()->with('category')->get();
-
+        // $tasks = $user->tasks()->with('category')->get();
+        $tasks = Task::all();
         $total     = $tasks->count();
         $completed = $tasks->where('status', 'completed')->count();
         $inProg    = $tasks->where('status', 'in_progress')->count();
