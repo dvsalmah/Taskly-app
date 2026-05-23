@@ -2,21 +2,30 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 export default defineConfig({
     server: {
-        host: '127.0.0.1',
+        host: 'localhost',
         port: 5173,
         hmr: {
-            host: '127.0.0.1',
+            host: 'localhost',
         },
     },
     plugins: [
+        tailwindcss(),   // ← pindah ke PERTAMA
         laravel({
-            input: 'resources/js/app.jsx',
+            input: [
+                'resources/css/app.css',  // ← TAMBAHKAN INI
+                'resources/js/app.jsx',
+            ],
             refresh: true,
         }),
         react(),
-        tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js'),
+        },
+    },
 });
