@@ -27,7 +27,7 @@ function MiniCalendar() {
     };
 
     return (
-        <div className="absolute top-[calc(100%+10px)] right-0 w-[260px] bg-surface rounded-[14px]
+        <div className="flex top-[calc(100%+10px)] right-0 w-[260px] bg-surface rounded-[14px]
                         shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-border p-4 z-[500] cal-popup-enter">
             <div className="flex items-center justify-between mb-3">
                 <button onClick={prev}
@@ -62,7 +62,7 @@ function MiniCalendar() {
     );
 }
 
-export default function Navbar({ user }) {
+export default function Navbar({ user, onMenuClick }) {
     const [calOpen, setCalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const calRef = useRef(null);
@@ -85,35 +85,55 @@ export default function Navbar({ user }) {
     });
 
     return (
-        <header className="bg-surface border-t-[4px] border-t-pink-dark border-b border-b-border h-[64px] w-full flex items-center justify-between px-8 sticky top-0 z-10">
+        <header className="bg-surface h-[72px] w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-sm">
+            <div className="flex items-center gap-4">
+                {/* Mobile Menu Toggle */}
+                <button 
+                    onClick={onMenuClick}
+                    className="lg:hidden p-2 -ml-2 rounded-lg text-muted hover:bg-fore transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
 
-            {/* Logo */}
-            <Link href="/dashboard" className="flex items-center shrink-0 no-underline">
-                <img
-                    src="/assets/taskly-HD.png"
-                    alt="Taskly"
-                    className="h-8 w-auto object-contain pl-6"
-                />
-            </Link>
+                {/* Logo */}
+                <Link href="/dashboard" className="flex items-center shrink-0 no-underline">
+                    <img
+                        src="/assets/taskly-HD.png"
+                        alt="Taskly"
+                        className="h-7 sm:h-8 w-auto object-contain"
+                    />
+                </Link>
+            </div>
 
             {/* Search bar */}
-            <div className="flex-1 flex justify-center">
-                <div className="flex items-center bg-fore border border-border rounded-lg
-                                px-4 py-2 gap-2 w-full max-w-[420px]">
-                    <img src="/assets/seacrh.svg" alt="" className="w-4 h-4 shrink-0 opacity-40" />
+            <div className="hidden sm:flex flex-1 max-w-lg px-4 sm:px-8">
+                <div
+                    className="flex items-center w-full h-10 gap-3 px-4
+                            rounded-full bg-fore border border-transparent
+                            focus-within:border-gray-200 overflow-hidden transition-colors"
+                >
+                    <img
+                        src="/assets/seacrh.svg"
+                        alt="Search"
+                        className="w-4 h-4 shrink-0 opacity-40"
+                    />
                     <input
                         type="text"
                         placeholder="Search your task here"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="flex-1 min-w-0 bg-transparent border-none outline-none ring-0
-                                   text-[14px] text-ink placeholder:text-muted"
+                        className="flex-1 min-w-0 bg-transparent border-none outline-none focus:ring-0
+                                text-[14px] text-ink placeholder:text-muted"
                     />
                 </div>
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-2 shrink-0 mr-4">
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                 <div className="relative flex items-center" ref={calRef}>
                     <button
                         title={todayStr}
@@ -121,18 +141,22 @@ export default function Navbar({ user }) {
                         className="w-10 h-10 flex items-center justify-center rounded-xl
                                    bg-transparent border-none cursor-pointer hover:bg-fore transition-colors"
                     >
-                        <img src="/assets/calendar.svg" alt="Calendar" className="w-6 h-6 object-contain" />
+                        <img src="/assets/calendar.svg" alt="Calendar" className="w-5 h-5 object-contain opacity-80" />
                     </button>
-                    {calOpen && <MiniCalendar />}
+                    {calOpen && (
+                        <div className="absolute right-0 top-[calc(100%+10px)] w-[260px] bg-surface rounded-[14px]
+                                      shadow-modal border border-border p-4 z-[500] animate-in fade-in slide-in-from-top-2 duration-200">
+                            <MiniCalendar />
+                        </div>
+                    )}
                 </div>
 
-                <Link href="/profile" title='My Profile' className="flex items-center ml-1 no-underline group rounded-full outline-none">
+                <Link href="/profile" title='My Profile' className="flex items-center outline-none rounded-full ring-2 ring-border ring-offset-2 ring-offset-surface hover:ring-pink-dark transition-all duration-300">
                     <img
                         src={photoUrl}
                         alt="Profile"
                         onError={(e) => { e.target.src = 'https://i.pravatar.cc/150?img=8'; }}
-                        className="w-10 h-10 pr-6 rounded-full object-cover transition-all duration-300 ring-2 ring-border ring-offset-2 ring-offset-surface
-                           group-hover:ring-pink-dark"
+                        className="w-10 h-10 rounded-full object-cover"
                     />
                 </Link>
             </div>
