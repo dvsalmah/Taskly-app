@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, router, usePage } from '@inertiajs/react';
 
 const NAV_ITEMS = [
@@ -10,20 +11,28 @@ const NAV_ITEMS = [
 ];
 
 function LogoutOverlay({ onCancel, onConfirm }) {
-    return (
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    if (!mounted || typeof document === 'undefined') return null;
+
+    return createPortal(
         <div
             className="fixed inset-0 z-[9999] flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
-            onClick={onCancel}
         >
             <div
-                className="bg-surface rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] p-8 flex flex-col items-center gap-5 w-80"
+                className="bg-surface rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] flex flex-col items-center justify-center gap-4 h-54 w-100 overflow-hidden"
                 style={{ animation: 'overlayFadeIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both' }}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Icon */}
                 <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center"
+                    className="w-12 h-12 rounded-full flex items-center justify-center"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
                         viewBox="0 0 24 24" fill="none" stroke="#dc2626"
@@ -36,28 +45,27 @@ function LogoutOverlay({ onCancel, onConfirm }) {
 
                 {/* Text */}
                 <div className="text-center">
-                    <p className="text-[16px] font-bold text-ink mb-1">Logout?</p>
-                    <p className="text-[13px] text-muted leading-relaxed">
+                    <p className="text-md font-bold text-ink mb-1">Logout?</p>
+                    <p className="text-sm text-muted leading-relaxed">
                         Are you sure you want to sign out<br />of your account?
                     </p>
                 </div>
 
                 {/* Buttons */}
-                <div className="flex gap-3 w-full">
+                <div className="flex items-center w-60 gap-4">
                     <button
                         onClick={onCancel}
-                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold
+                        className="flex-1 h-8 rounded-xl text-sm font-semibold
                                    border border-gray-200 text-ink bg-fore
-                                   hover:bg-border transition-colors cursor-pointer"
+                                   hover:bg-border hover:-translate-y-px transition-all cursor-pointer"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold
-                                   text-white border-none cursor-pointer transition-all
+                        className="flex-1 h-8 bg-red-500 text-white rounded-xl text-sm font-semibold
+                                   cursor-pointer transition-all
                                    hover:-translate-y-px"
-                        style={{ background: '#e84393' }}
                     >
                         Yes, Logout
                     </button>
@@ -70,22 +78,20 @@ function LogoutOverlay({ onCancel, onConfirm }) {
                     to   { opacity: 1; transform: scale(1); }
                 }
             `}</style>
-        </div>
+        </div>,
+        document.body
     );
 }
 
-/* ───────────── Sidebar ───────────── */
 export default function Sidebar() {
     const { url } = usePage();
     const [showLogout, setShowLogout] = useState(false);
 
-    // Simple, reliable active check — compares pathname only (no route() needed)
     const isActive = (path) => {
         const currentPath = url.split('?')[0];
         return currentPath === path || currentPath.startsWith(path + '/');
     };
 
-    // POST to /logout using router directly with a plain string path
     const handleLogoutConfirm = () => {
         router.post('/logout');
     };
@@ -123,11 +129,11 @@ export default function Sidebar() {
                 </nav>
 
                 <div className="flex-1 border-b border-white/50"/>
-                <Link
+                <button
                     onClick={() => setShowLogout(true)}
                     className="flex items-center justify-center h-14 gap-3 
                             text-white/80 text-sm font-medium w-50 text-left
-                            bg-transparent hover:text-red-500
+                            bg-transparent border-none hover:text-red-500
                             transition-colors duration-200 cursor-pointer"
                 >
                     <div className="w-auto h-7 flex items-center shrink-0 hover:red-500">
@@ -141,7 +147,7 @@ export default function Sidebar() {
                         </svg>
                     </div>
                     <span className='tracking-wide'>Logout</span>
-                </Link>
+                </button>
             </aside>
 
             {showLogout && (
