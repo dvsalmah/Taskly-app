@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
     public function destroy(Request $request, Category $category): RedirectResponse
     {
-        abort_unless($category->user_id === $request->user()->id, 403);
+        abort_unless($category->username === $request->user()->username, 403);
 
         // Null out category_id on related tasks (mirrors original PHP behaviour)
         $category->tasks()->update(['category_id' => null]);

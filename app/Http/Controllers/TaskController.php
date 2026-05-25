@@ -83,7 +83,7 @@ class TaskController extends Controller
 
     private function authorizeTask(Task $task, $user): void
     {
-        abort_unless($task->user_id === $user->id, 403);
+        abort_unless($task->username === $user->username, 403);
     }
 
     private function formatTask($task): array
