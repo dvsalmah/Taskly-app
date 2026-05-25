@@ -101,9 +101,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <ShadcnSidebar collapsible="icon" className="border-r-0 !bg-sidebar text-white" style={{ '--sidebar-width': '14rem' }}>
-                
-                {/* Spacer top + Toggle Button */}
+            <ShadcnSidebar collapsible="icon" className="border-r-0 bg-sidebar text-white w-56">
                 <div className={`h-16 flex items-center mb-2 px-2 ${isExpanded ? 'justify-end pr-4' : 'justify-center'}`}>
                     <button 
                         onClick={toggleSidebar}
@@ -130,7 +128,7 @@ export default function Sidebar() {
                                 className={[
                                     'h-10 flex items-center rounded-md transition-all duration-200',
                                     'text-sm font-medium no-underline',
-                                    isExpanded ? 'w-50 ml-4 gap-3 px-3' : 'w-10 justify-center px-0',
+                                    isExpanded ? 'w-11/12 gap-3 px-3' : 'w-10 justify-center px-0',
                                     isActive(item.path)
                                         ? 'bg-white/30 text-white'
                                         : 'text-white/85 hover:bg-white/15 hover:text-white',
@@ -153,9 +151,9 @@ export default function Sidebar() {
                 <SidebarFooter className="border-t border-white/50 p-0 overflow-hidden">
                     <button
                         onClick={() => setShowLogout(true)}
-                        className="flex items-center justify-center h-14 bg-transparent border-none hover:bg-red-400 group transition-colors duration-200 cursor-pointer w-full gap-3"
+                        className="flex items-center justify-center h-14 bg-surface/10 border-none hover:bg-surface/50 group/logout transition-colors duration-200 cursor-pointer w-full gap-3"
                     >
-                        <div className="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white transition-colors">
+                        <div className="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover/logout:text-pink-dark transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -165,7 +163,7 @@ export default function Sidebar() {
                                 <line x1="21" y1="12" x2="9" y2="12" />
                             </svg>
                         </div>
-                        {isExpanded && <span className='tracking-wide text-white/80 text-sm font-medium group-hover:text-white'>Logout</span>}
+                        {isExpanded && <span className='tracking-wide text-white/80 text-sm font-medium group-hover/logout:text-pink-dark'>Logout</span>}
                     </button>
                 </SidebarFooter>
             </ShadcnSidebar>
