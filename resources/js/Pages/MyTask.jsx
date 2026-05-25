@@ -289,7 +289,9 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
 export default function MyTask({ tasks, categories }) {
     const [activeStatus, setActiveStatus] = useState('all');
     const [activePriority, setActivePriority] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
+    const { url } = usePage();
+    const params = new URLSearchParams(url.split('?')[1]);
+    const [searchQuery, setSearchQuery] = useState(params.get('search') || '');
     const [addOpen, setAddOpen] = useState(false);
     const [previewTask, setPreviewTask] = useState(null);
     const [editTask, setEditTask] = useState(null);
@@ -343,14 +345,14 @@ export default function MyTask({ tasks, categories }) {
             {/* Task grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredTasks.length === 0 && tasks.length === 0 && (
-                    <div className="col-span-full text-center py-16 text-muted">
-                        <img src="/assets/clipboard.svg" alt="" className="w-16 h-16 mx-auto mb-4 opacity-40" />
+                    <div className="col-span-full flex flex-col items-center py-16 text-muted">
+                        <img src="/assets/clipboard.svg" alt="" className="w-8 h-8 mx-auto mb-4 opacity-40" />
                         <h3 className="text-[16px] font-semibold text-ink mb-1.5 m-0">No tasks yet</h3>
                         <p className="text-[13px] m-0">Click "Add Task" to create your first task.</p>
                     </div>
                 )}
                 {filteredTasks.length === 0 && tasks.length > 0 && (
-                    <div className="flex flex-col items-center justify-center text-center !py-16 gap-3 text-muted">
+                    <div className="col-span-full flex flex-col items-center justify-center text-center !py-16 gap-3 text-muted">
                         <img src="/assets/seacrh.svg" alt="" className="w-8 h-8  mb-4 opacity-40" />
                         <span className="text-md font-semibold text-ink mb-1.5 m-0">No tasks match this filter</span>
                     </div>

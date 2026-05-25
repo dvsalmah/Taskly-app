@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useSidebar } from '@/components/ui/sidebar';
 
 const MONTHS = [
@@ -65,8 +65,10 @@ function MiniCalendar() {
 
 export default function Navbar({ user }) {
     const { toggleSidebar } = useSidebar();
+    const { url } = usePage();
+    const params = new URLSearchParams(url.split('?')[1]);
     const [calOpen, setCalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(params.get('search') || '');
     const calRef = useRef(null);
 
     useEffect(() => {
@@ -128,6 +130,11 @@ export default function Navbar({ user }) {
                         placeholder="Search your task here"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                router.get('/my-task', { search: searchQuery.trim() });
+                            }
+                        }}
                         className="flex-1 min-w-0 bg-transparent border-none outline-none focus:ring-0
                                 text-[14px] text-ink placeholder:text-muted"
                     />
