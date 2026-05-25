@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
@@ -15,13 +15,7 @@ function Toast({ type, msg, onClose }) {
                 minWidth: '260px',
             }}
         >
-            <span className="text-lg mt-[-2px]">{type === 'success' ? '✅' : '❌'}</span>
-            <div className="flex-1 text-[13px] font-semibold leading-snug">{msg}</div>
-            <button
-                onClick={onClose}
-                className="ml-2 mt-[-2px] text-[18px] font-bold bg-transparent border-none cursor-pointer opacity-40 hover:opacity-80 transition-opacity"
-                style={{ color: 'inherit' }}
-            >×</button>
+            <div className="flex-1 text-sm !p-2 font-semibold leading-snug">{msg}</div>
 
             <style>{`
                 @keyframes toastIn {
@@ -43,7 +37,6 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
         setDragging(false);
         const file = e.dataTransfer.files?.[0];
         if (file && file.type.startsWith('image/')) {
-            // synthetic event
             onFileChange({ target: { files: [file] } });
         }
     };
@@ -59,17 +52,13 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
                 onDrop={handleDrop}
             >
                 <div
-                    className="w-28 h-28 rounded-full overflow-hidden transition-all duration-300"
-                    style={{
-                        boxShadow: dragging
-                            ? '0 0 0 4px #e84393, 0 0 0 8px rgba(232,67,147,0.2)'
-                            : '0 0 0 3px #e84393, 0 0 0 6px rgba(232,67,147,0.15)',
-                    }}
+                    className={`w-20 h-20 rounded-full overflow-hidden transition-all duration-300 ring-2 ring-offset-2 ring-offset-surface
+                               ${dragging ? 'ring-pink-dark scale-105' : 'ring-pink-dark'}`}
                 >
                     <img
                         src={displaySrc}
                         alt="Profile"
-                        onError={(e) => { e.target.src = 'https://i.pravatar.cc/150?img=8'; }}
+                        onError={(e) => { e.target.src = '/assets/avatar.png'; }}
                         className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-75"
                     />
                 </div>
@@ -86,15 +75,6 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
                         <span className="text-[10px] font-bold text-white">Change</span>
                     </div>
                 </div>
-
-                {/* Preview badge */}
-                {previewUrl && (
-                    <div
-                        className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-lg"
-                        style={{ background: '#e84393' }}
-                        title="Preview — not saved yet"
-                    >✦</div>
-                )}
             </div>
 
             {/* Hidden file input */}
@@ -107,22 +87,15 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
             />
 
             {/* Hint / cancel */}
-            <div className="text-center">
+            <div className="text-center h-10 flex flex-col items-center justify-start">
                 {previewUrl ? (
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="text-[12px] font-semibold" style={{ color: '#e84393' }}>
-                            Preview active — not saved yet
+                    <div className="flex flex-col">
+                        <span className="text-sm text-pink-dark font-semibold leading-tight">
+                            Not saved yet
                         </span>
-                        <button
-                            type="button"
-                            onClick={onCancel}
-                            className="text-[12px] text-muted underline bg-transparent border-none cursor-pointer hover:text-ink transition-colors"
-                        >
-                            Cancel
-                        </button>
                     </div>
                 ) : (
-                    <p className="text-[12px] text-muted">
+                    <p className="text-xs text-muted leading-tight">
                         Click or drag to change photo
                     </p>
                 )}
@@ -135,7 +108,7 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
 function Field({ label, children }) {
     return (
         <div>
-            <label className="block text-[12px] font-bold text-muted uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5">
                 {label}
             </label>
             {children}
@@ -147,15 +120,15 @@ function Field({ label, children }) {
 export default function ProfileEdit({ user }) {
     const [form, setForm] = useState({
         first_name: user.first_name ?? '',
-        last_name:  user.last_name  ?? '',
-        email:      user.email      ?? '',
-        contact:    user.contact    ?? '',
-        position:   user.position   ?? '',
+        last_name: user.last_name ?? '',
+        email: user.email ?? '',
+        contact: user.contact ?? '',
+        position: user.position ?? '',
     });
-    const [photoFile, setPhotoFile]       = useState(null);
+    const [photoFile, setPhotoFile] = useState(null);
     const [photoPreview, setPhotoPreview] = useState(null);
-    const [busy, setBusy]                 = useState(false);
-    const [toast, setToast]               = useState(null);
+    const [busy, setBusy] = useState(false);
+    const [toast, setToast] = useState(null);
     const fileRef = useRef();
 
     const field = (key) => ({
@@ -179,6 +152,71 @@ export default function ProfileEdit({ user }) {
         if (fileRef.current) fileRef.current.value = '';
     };
 
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [pendingVisit, setPendingVisit] = useState(null);
+    const ignoreDirtyRef = useRef(false);
+
+    const isDirty =
+        form.first_name !== (user.first_name ?? '') ||
+        form.last_name !== (user.last_name ?? '') ||
+        form.email !== (user.email ?? '') ||
+        form.contact !== (user.contact ?? '') ||
+        form.position !== (user.position ?? '') ||
+        photoFile !== null;
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isDirty && !ignoreDirtyRef.current) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        const removeBeforeListener = router.on('before', (event) => {
+            if (isDirty && !ignoreDirtyRef.current && event.detail.visit.method === 'get') {
+                event.preventDefault();
+                setPendingVisit(event.detail.visit);
+                setShowCancelModal(true);
+            }
+        });
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            removeBeforeListener();
+        };
+    }, [isDirty]);
+
+    const handleCancelClick = () => {
+        if (isDirty) {
+            setShowCancelModal(true);
+        } else {
+            window.history.back();
+        }
+    };
+
+    const confirmCancel = () => {
+        ignoreDirtyRef.current = true;
+        setShowCancelModal(false);
+        setForm({
+            first_name: user.first_name ?? '',
+            last_name: user.last_name ?? '',
+            email: user.email ?? '',
+            contact: user.contact ?? '',
+            position: user.position ?? '',
+        });
+        cancelPreview();
+
+        if (pendingVisit) {
+            setTimeout(() => {
+                router.visit(pendingVisit.url, pendingVisit);
+                ignoreDirtyRef.current = false;
+            }, 0);
+        } else {
+            ignoreDirtyRef.current = false;
+        }
+    };
+
     const showToast = (type, msg) => {
         setToast({ type, msg });
         setTimeout(() => setToast(null), 4000);
@@ -187,6 +225,7 @@ export default function ProfileEdit({ user }) {
     const submit = (e) => {
         e.preventDefault();
         setBusy(true);
+        ignoreDirtyRef.current = true;
         const data = new FormData();
         Object.entries(form).forEach(([k, v]) => data.append(k, v));
         if (photoFile) data.append('photo', photoFile);
@@ -203,45 +242,31 @@ export default function ProfileEdit({ user }) {
                 const firstErr = Object.values(errs)[0];
                 showToast('error', firstErr || 'Something went wrong.');
             },
-            onFinish: () => setBusy(false),
+            onFinish: () => {
+                setBusy(false);
+                ignoreDirtyRef.current = false;
+            },
         });
     };
 
     const inputCls = [
-        'w-full border-[1.5px] border-border rounded-xl px-4 py-3 text-[14px] text-ink',
+        'w-full h-10 border-b-2 border-gray-300 rounded-xl !px-4 text-sm text-ink',
         'bg-fore font-sans outline-none transition-all duration-200',
-        'focus:border-pink-dark focus:bg-surface focus:shadow-[0_0_0_3px_rgba(232,67,147,0.1)]',
+        'focus:border-pink-dark',
     ].join(' ');
 
     return (
         <AuthenticatedLayout>
             <Head title="Profile" />
-
-            {/* Toast */}
             {toast && <Toast type={toast.type} msg={toast.msg} onClose={() => setToast(null)} />}
 
-            <div className="max-w-3xl">
-                {/* Page header */}
-                <div className="mb-6">
-                    <h1 className="text-[22px] font-extrabold text-ink tracking-tight">My Profile</h1>
-                    <p className="text-[13px] text-muted mt-0.5">Manage your account information and photo</p>
-                </div>
-
+            <div className="max-w-6xl">
                 <form onSubmit={submit} encType="multipart/form-data">
-                    {/* ── Card ── */}
-                    <div className="bg-surface rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.08)] overflow-hidden">
+                    <div className="bg-surface rounded-2xl !p-4 shadow-[0_2px_20px_rgba(0,0,0,0.08)] overflow-hidden">
+                        <div className='flex-1 text-md font-bold !px-6 !mb-4'>Account Information</div>
 
-                        {/* Top banner */}
-                        <div
-                            className="h-24 w-full"
-                            style={{
-                                background: 'linear-gradient(135deg, #e84393 0%, #f97316 60%, #facc15 100%)',
-                                opacity: 0.85,
-                            }}
-                        />
-
-                        {/* Avatar — overlaps banner */}
-                        <div className="px-8 pb-0 -mt-14 flex items-end gap-6">
+                        {/* Avatar */}
+                        <div className="!px-8 pb-0 flex items-center gap-6">
                             <AvatarUploader
                                 previewUrl={photoPreview}
                                 currentUrl={user.photo_url}
@@ -249,17 +274,16 @@ export default function ProfileEdit({ user }) {
                                 onCancel={cancelPreview}
                                 fileRef={fileRef}
                             />
-                            <div className="pb-3">
-                                <p className="text-[18px] font-extrabold text-ink leading-tight">
+                            <div className="flex flex-col justify-center">
+                                <p className="text-lg font-bold text-ink leading-tight mb-1">
                                     {form.first_name || 'First'} {form.last_name || 'Last'}
                                 </p>
-                                <p className="text-[13px] text-muted">
-                                    {user.username && `@${user.username}`}
+                                <p className="text-xs text-muted">
+                                    {user.email}
                                 </p>
                                 {form.position && (
                                     <span
-                                        className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold text-white"
-                                        style={{ background: '#e84393' }}
+                                        className="inline-block mt-2 px-3 py-0.5 rounded-full text-[11px] font-bold text-white w-max bg-pink-dark"
                                     >
                                         {form.position}
                                     </span>
@@ -268,11 +292,11 @@ export default function ProfileEdit({ user }) {
                         </div>
 
                         {/* Divider */}
-                        <div className="mx-8 mt-5 mb-6 border-t border-border" />
+                        <div className="mx-8 border-t border-border" />
 
                         {/* Fields grid */}
-                        <div className="px-8 pb-8">
-                            <p className="text-[12px] font-bold text-muted uppercase tracking-widest mb-5">
+                        <div className="!p-8 w-full">
+                            <p className="text-xs font-bold text-muted uppercase tracking-widest !mb-2">
                                 Account Information
                             </p>
 
@@ -303,7 +327,7 @@ export default function ProfileEdit({ user }) {
                                     <input type="text" placeholder="e.g. Designer" {...field('position')} />
                                 </Field>
 
-                                {/* Username — read-only */}
+                                {/* Username*/}
                                 <Field label="Username">
                                     <input
                                         type="text"
@@ -316,15 +340,23 @@ export default function ProfileEdit({ user }) {
                             </div>
 
                             {/* Actions */}
-                            <div className="flex items-center gap-3 mt-8 pt-5 border-t border-border">
+                            <div className="flex items-center justify-end gap-3 !mt-6">
+                                <button
+                                    type="button"
+                                    onClick={handleCancelClick}
+                                    disabled={busy}
+                                    className="lex items-center gap-2 !px-8 !py-2 rounded-xl text-sm font-bold
+                                               border border-gray-200 text-ink bg-fore hover:bg-border transition-all cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
                                 <button
                                     type="submit"
                                     disabled={busy}
-                                    className="flex items-center gap-2 px-6 py-3 rounded-xl text-[13px] font-bold
+                                    className="flex items-center gap-2 !px-8 !py-2 rounded-xl text-sm font-bold
                                                text-white border-none cursor-pointer transition-all duration-200
-                                               hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(232,67,147,0.4)]
-                                               disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
-                                    style={{ background: busy ? '#e84393' : 'linear-gradient(135deg,#e84393,#c02070)' }}
+                                               hover:bg-pink-dark/80 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0
+                                               bg-pink-dark"
                                 >
                                     {busy ? (
                                         <>
@@ -348,23 +380,68 @@ export default function ProfileEdit({ user }) {
                                         </>
                                     )}
                                 </button>
-
-                                {photoPreview && (
-                                    <button
-                                        type="button"
-                                        onClick={cancelPreview}
-                                        className="px-4 py-3 rounded-xl text-[13px] font-semibold
-                                                   border border-border text-muted bg-transparent
-                                                   hover:bg-fore transition-colors cursor-pointer"
-                                    >
-                                        Cancel Photo
-                                    </button>
-                                )}
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
+
+            {/* Cancel Confirmation Modal */}
+            {showCancelModal && (
+                <div
+                    className="fixed inset-0 z-[9999] flex items-center justify-center"
+                    style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+                >
+                    <div
+                        className="bg-surface rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] flex flex-col items-center justify-center gap-4 h-54 w-100 overflow-hidden"
+                        style={{ animation: 'overlayFadeIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both' }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Icon */}
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                                viewBox="0 0 24 24" fill="none" stroke="var(--color-pink-dark)"
+                                strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                            </svg>
+                        </div>
+
+                        {/* Text */}
+                        <div className="text-center">
+                            <p className="text-md font-bold text-ink mb-1">Discard changes?</p>
+                            <p className="text-sm text-muted leading-relaxed">
+                                Are you sure you want to discard<br />your unsaved changes?
+                            </p>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex items-center w-60 gap-4">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowCancelModal(false);
+                                    setPendingVisit(null);
+                                }}
+                                className="flex-1 h-8 rounded-xl text-sm font-semibold
+                                           border border-gray-200 text-ink bg-fore
+                                           hover:bg-border hover:-translate-y-px transition-all cursor-pointer"
+                            >
+                                Keep Editing
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmCancel}
+                                className="flex-1 h-8 bg-pink-dark text-white rounded-xl text-sm font-semibold
+                                           cursor-pointer transition-all hover:-translate-y-px"
+                            >
+                                Discard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }

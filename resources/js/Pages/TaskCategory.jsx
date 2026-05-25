@@ -7,18 +7,18 @@ const PRESETS = ['#EC003F','#FF6F00','#F9A825','#2E7D32','#1565C0','#6A1B9A','#0
 
 function CategoryCard({ cat, onDelete }) {
     return (
-        <div className="bg-surface rounded-[10px] p-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.07)]
-                        flex items-center gap-3 border-t-4 transition-shadow hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]"
+        <div className="!bg-white rounded-2xl !p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]
+                        flex items-center gap-4 border-t-4 transition-all duration-200 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
              style={{ borderTopColor: cat.color }}>
-            <div className="w-9 h-9 rounded-full flex-shrink-0" style={{ background: cat.color }} />
+            <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ background: cat.color }} />
             <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-semibold text-ink">{cat.name}</div>
-                <div className="text-[12px] text-muted">{cat.tasks_count} task{cat.tasks_count !== 1 ? 's' : ''}</div>
+                <div className="text-[15px] font-bold text-ink">{cat.name}</div>
+                <div className="text-[13px] text-muted font-medium">{cat.tasks_count} task{cat.tasks_count !== 1 ? 's' : ''}</div>
             </div>
             <button onClick={() => onDelete(cat)}
-                    className="text-[20px] leading-none border-none bg-transparent cursor-pointer text-muted
-                               hover:text-[#C62828] transition-colors p-1" title="Delete category">
-                🗑
+                    className="flex flex-col items-center justify-center bg-red-400 h-6 w-6 rounded-lg cursor-pointer text-muted
+                               hover:red-500 transition-colors p-1" title="Delete category">
+                <img src="/assets/trash.svg" alt="delete" className="w-4 h-4" />
             </button>
         </div>
     );
@@ -98,29 +98,27 @@ export default function TaskCategory({ categories }) {
             <Head title="Task Categories" />
 
             {/* Header */}
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                 <div>
-                    <h1 className="text-[22px] font-bold text-ink">Task Categories</h1>
-                    <p className="text-[13px] text-muted mt-0.5">
-                        {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'}
-                    </p>
+                    <h1 className="text-3xl font-bold text-ink m-0">Task Categories</h1>
+                    <p className="text-[13px] text-muted mt-1 !mb-4">{categories.length} categor{categories.length !== 1 ? 'ies' : 'y'} </p>
                 </div>
                 <button onClick={() => setModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-[18px] py-2.5 rounded-lg text-[13px] font-semibold
-                                   bg-pink-dark text-white border-none cursor-pointer transition-all
-                                   hover:bg-pink hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(134,16,67,0.3)]">
-                    <img src="/assets/add.svg" alt="" className="w-4 h-4 brightness-0 invert" /> Add Category
+                    className="inline-flex items-center justify-center gap-1.5 !px-3 !py-2.5 rounded-lg text-sm font-semibold
+                                   bg-pink-dark text-white transition-all
+                                   hover:bg-pink-dark/80  w-full sm:w-auto cursor-pointer border-none">
+                    <img src="/assets/add.svg" alt="" className="w-4 h-4 invert" /> Add Category
                 </button>
             </div>
 
             {/* Category grid */}
             {categories.length === 0 ? (
                 <div className="text-center py-16 text-muted">
-                    <h3 className="text-[16px] font-semibold text-ink mb-1.5">No categories yet</h3>
-                    <p className="text-[13px]">Create categories to organise your tasks by topic, project, or priority.</p>
+                    <h3 className="text-[16px] font-semibold text-ink mb-1.5 m-0">No categories yet</h3>
+                    <p className="text-[13px] m-0">Create categories to organise your tasks by topic, project, or priority.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {categories.map(cat => (
                         <CategoryCard key={cat.id} cat={cat} onDelete={handleDelete} />
                     ))}
