@@ -13,15 +13,15 @@ export default defineConfig({
         },
     },
     plugins: [
-        tailwindcss(),   // ← pindah ke PERTAMA
         laravel({
             input: [
-                'resources/css/app.css',  // ← TAMBAHKAN INI
+                'resources/css/app.css',
                 'resources/js/app.jsx',
             ],
             refresh: true,
         }),
         react(),
+        tailwindcss(),
     ],
     resolve: {
         alias: {
