@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, router, usePage } from '@inertiajs/react';
+import { Sidebar as ShadcnSidebar, SidebarContent, SidebarFooter, useSidebar } from "@/components/ui/sidebar";
 
 const NAV_ITEMS = [
     { label: 'Dashboard', path: '/dashboard', icon: '/assets/homepage.svg' },
@@ -86,6 +87,8 @@ function LogoutOverlay({ onCancel, onConfirm }) {
 export default function Sidebar() {
     const { url } = usePage();
     const [showLogout, setShowLogout] = useState(false);
+    const { state, toggleSidebar } = useSidebar();
+    const isExpanded = state === "expanded";
 
     const isActive = (path) => {
         const currentPath = url.split('?')[0];
@@ -98,57 +101,74 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className="w-56 bg-sidebar flex flex-col z-50 shrink-0 sticky top-0 left-0 h-screen">
-    
-                {/* Spacer top */}
-                <div className="h-16" />
-                <nav className="flex flex-col gap-3 items-center">
-                    {NAV_ITEMS.map((item) => (
-                        <Link
-                            key={item.path}
-                            href={item.path}
-                            className={[
-                                'w-50 h-8 flex items-center ml-4 gap-3 py-3 rounded-md',
-                                'text-sm font-medium no-underline transition-all duration-200',
-                                isActive(item.path)
-                                    ? 'bg-white/30 text-white'
-                                    : 'text-white/85 hover:bg-white/15 hover:text-white',
-                            ].join(' ')}
-                        >
-                            <div className="w-7 h-7 flex items-center justify-center shrink-0">
-                                <img
-                                    src={item.icon}
-                                    alt=""
-                                    className="shrink-0 brightness-0 invert"
-                                    style={{ width: 20, height: 20 }}
-                                />
-                            </div>
-                            <span className="tracking-wide">{item.label}</span>
-                        </Link>
-                    ))}
-                </nav>
+            <ShadcnSidebar collapsible="icon" className="border-r-0 !bg-sidebar text-white" style={{ '--sidebar-width': '14rem' }}>
+                
+                {/* Spacer top + Toggle Button */}
+                <div className={`h-16 flex items-center mb-2 px-2 ${isExpanded ? 'justify-end pr-4' : 'justify-center'}`}>
+                    <button 
+                        onClick={toggleSidebar}
+                        className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-white/15 transition-colors cursor-pointer border-none bg-transparent"
+                    >
+                        {isExpanded ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white ">
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                        ) : (
+                            <img src="/assets/open.svg" alt="Open" className="w-6 h-6 brightness-0 invert" />
+                        )}
+                    </button>
+                </div>
 
-                <div className="flex-1 border-b border-white/50"/>
-                <button
-                    onClick={() => setShowLogout(true)}
-                    className="flex items-center justify-center h-14 gap-3 
-                            text-white/80 text-sm font-medium w-50 text-left
-                            bg-transparent border-none hover:text-red-500
-                            transition-colors duration-200 cursor-pointer"
-                >
-                    <div className="w-auto h-7 flex items-center shrink-0 hover:red-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                            className="shrink-0">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                            <polyline points="16 17 21 12 16 7" />
-                            <line x1="21" y1="12" x2="9" y2="12" />
-                        </svg>
-                    </div>
-                    <span className='tracking-wide'>Logout</span>
-                </button>
-            </aside>
+                <SidebarContent>
+                    <nav className="flex flex-col gap-3 items-center w-full">
+                        {NAV_ITEMS.map((item) => (
+                            <Link
+                                key={item.path}
+                                href={item.path}
+                                className={[
+                                    'h-10 flex items-center rounded-md transition-all duration-200',
+                                    'text-sm font-medium no-underline',
+                                    isExpanded ? 'w-50 ml-4 gap-3 px-3' : 'w-10 justify-center px-0',
+                                    isActive(item.path)
+                                        ? 'bg-white/30 text-white'
+                                        : 'text-white/85 hover:bg-white/15 hover:text-white',
+                                ].join(' ')}
+                            >
+                                <div className="w-7 h-7 flex items-center justify-center shrink-0">
+                                    <img
+                                        src={item.icon}
+                                        alt=""
+                                        className="shrink-0 brightness-0 invert"
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                </div>
+                                {isExpanded && <span className="tracking-wide">{item.label}</span>}
+                            </Link>
+                        ))}
+                    </nav>
+                </SidebarContent>
+
+                <SidebarFooter className="border-t border-white/50 p-0 overflow-hidden">
+                    <button
+                        onClick={() => setShowLogout(true)}
+                        className="flex items-center justify-center h-14 bg-transparent border-none hover:bg-red-400 group transition-colors duration-200 cursor-pointer w-full gap-3"
+                    >
+                        <div className="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                className="shrink-0">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                        </div>
+                        {isExpanded && <span className='tracking-wide text-white/80 text-sm font-medium group-hover:text-white'>Logout</span>}
+                    </button>
+                </SidebarFooter>
+            </ShadcnSidebar>
 
             {showLogout && (
                 <LogoutOverlay

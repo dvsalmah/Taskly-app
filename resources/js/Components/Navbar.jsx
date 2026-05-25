@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from '@inertiajs/react';
+import { useSidebar } from '@/components/ui/sidebar';
 
 const MONTHS = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -27,42 +28,43 @@ function MiniCalendar() {
     };
 
     return (
-        <div className="flex top-[calc(100%+10px)] right-0 w-[260px] bg-surface rounded-[14px]
-                        shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-border p-4 z-[500] cal-popup-enter">
-            <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col w-[280px] bg-surface rounded-[14px]
+                        shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-border !p-5 z-[500] cal-popup-enter">
+            <div className="flex items-center justify-between mb-4">
                 <button onClick={prev}
-                    className="text-muted hover:bg-fore rounded px-1.5 text-xl leading-none
+                    className="flex items-center justify-center w-6 h-6 text-muted hover:bg-fore rounded-md text-xl leading-none
                                transition-colors bg-transparent border-none cursor-pointer">‹</button>
-                <span className="text-[14px] font-bold text-ink">{MONTHS[viewMonth]} {viewYear}</span>
+                <span className="text-[14px] font-bold text-ink tracking-wide">{MONTHS[viewMonth]} {viewYear}</span>
                 <button onClick={next}
-                    className="text-muted hover:bg-fore rounded px-1.5 text-xl leading-none
+                    className="flex items-center justify-center w-6 h-6 text-muted hover:bg-fore rounded-md text-xl leading-none
                                transition-colors bg-transparent border-none cursor-pointer">›</button>
             </div>
-            <div className="grid grid-cols-7 text-center text-[10px] font-bold text-muted uppercase tracking-wide">
+            <div className="grid grid-cols-7 text-center text-[11px] font-bold text-muted uppercase tracking-wider mb-2">
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => <span key={d}>{d}</span>)}
             </div>
-            <div className="grid grid-cols-7 gap-0.5">
+            <div className="grid grid-cols-7 gap-y-1 gap-x-1">
                 {Array.from({ length: firstDay }).map((_, i) => <span key={'e' + i} />)}
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
                     const isToday = d === now.getDate()
                         && viewMonth === now.getMonth()
                         && viewYear === now.getFullYear();
                     return (
-                        <span key={d} className={`text-center py-1 text-[12px] rounded-full cursor-default
-                            ${isToday ? 'bg-pink-dark text-white font-bold' : 'text-ink hover:bg-fore'}`}>
+                        <span key={d} className={`flex items-center justify-center w-8 h-8 mx-auto text-[13px] rounded-full cursor-default transition-colors
+                            ${isToday ? 'bg-pink-dark text-white font-bold shadow-sm' : 'text-ink hover:bg-fore'}`}>
                             {d}
                         </span>
                     );
                 })}
             </div>
-            <div className="mt-3 pt-2.5 border-t border-border text-center text-[11px] font-medium text-muted">
+            <div className="mt-4 pt-3 border-t border-border text-center text-[12px] font-medium text-muted">
                 {dateFullStr}
             </div>
         </div>
     );
 }
 
-export default function Navbar({ user, onMenuClick }) {
+export default function Navbar({ user }) {
+    const { toggleSidebar } = useSidebar();
     const [calOpen, setCalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const calRef = useRef(null);
@@ -85,11 +87,11 @@ export default function Navbar({ user, onMenuClick }) {
     });
 
     return (
-        <header className="bg-surface h-[72px] w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-sm">
+        <header className="bg-surface h-[72px] w-full flex items-center justify-between !px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-sm">
             <div className="flex items-center gap-4">
                 {/* Mobile Menu Toggle */}
                 <button 
-                    onClick={onMenuClick}
+                    onClick={toggleSidebar}
                     className="lg:hidden p-2 -ml-2 rounded-lg text-muted hover:bg-fore transition-colors"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -104,7 +106,7 @@ export default function Navbar({ user, onMenuClick }) {
                     <img
                         src="/assets/taskly-HD.png"
                         alt="Taskly"
-                        className="h-7 sm:h-8 w-auto object-contain"
+                        className="h-10 w-auto object-contain"
                     />
                 </Link>
             </div>
@@ -113,13 +115,13 @@ export default function Navbar({ user, onMenuClick }) {
             <div className="hidden sm:flex flex-1 max-w-lg px-4 sm:px-8">
                 <div
                     className="flex items-center w-full h-10 gap-3 px-4
-                            rounded-full bg-fore border border-transparent
+                            rounded-lg bg-fore border border-transparent
                             focus-within:border-gray-200 overflow-hidden transition-colors"
                 >
                     <img
                         src="/assets/seacrh.svg"
                         alt="Search"
-                        className="w-4 h-4 shrink-0 opacity-40"
+                        className="w-4 h-4 shrink-0 opacity-40 !ml-6"
                     />
                     <input
                         type="text"
@@ -155,8 +157,8 @@ export default function Navbar({ user, onMenuClick }) {
                     <img
                         src={photoUrl}
                         alt="Profile"
-                        onError={(e) => { e.target.src = 'https://i.pravatar.cc/150?img=8'; }}
-                        className="w-10 h-10 rounded-full object-cover"
+                        onError={(e) => { e.target.src = '/assets/avatar.png'; }}
+                        className="h-12 w-auto rounded-full object-cover"
                     />
                 </Link>
             </div>

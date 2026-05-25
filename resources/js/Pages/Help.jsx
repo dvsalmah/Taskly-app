@@ -1,14 +1,14 @@
-import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 const HELP_CARDS = [
-    { icon: '/assets/my-task.svg',      title: 'My Task',            desc: 'Add, edit, and manage all your tasks in one place. Set a title, description, category, and status. Use the status dropdown on each card to quickly update progress.' },
-    { icon: '/assets/vital-task.svg',   title: 'Vital Task',         desc: 'Tasks with High priority and a deadline within 48 hours are automatically shown here. Keep an eye on them so nothing important slips through.' },
-    { icon: '/assets/category.svg',     title: 'Task Categories',    desc: 'Create custom categories (e.g. Work, Personal, Study) with your own colour. When adding a task, pick a category to keep things organised and visually distinct.' },
-    { icon: '/assets/homepage.svg',     title: 'Dashboard',          desc: 'The homepage shows your upcoming to-dos, real-time task status percentages, and recently completed tasks — all pulled live from your task data.' },
-    { icon: '/assets/profile.svg',      title: 'Profile & Settings', desc: 'Update your name, email, contact, and position anytime. You can also upload a profile photo (JPG/PNG, max 2 MB) which will show in the navbar.' },
-    { icon: '/assets/password.svg',     title: 'Security',           desc: 'Change your password from the Profile page. Your session is protected — you\'ll be redirected to login if not authenticated. Logout from the sidebar at any time.' },
+    { icon: '/assets/my-task.svg', title: 'My Task', desc: 'Add, edit, and manage all your tasks in one place. Set a title, description, category, and status. Use the status dropdown on each card to quickly update progress.' },
+    { icon: '/assets/vital-task.svg', title: 'Vital Task', desc: 'Tasks with High priority and a deadline within 48 hours are automatically shown here. Keep an eye on them so nothing important slips through.' },
+    { icon: '/assets/category.svg', title: 'Task Categories', desc: 'Create custom categories (e.g. Work, Personal, Study) with your own colour. When adding a task, pick a category to keep things organised and visually distinct.' },
+    { icon: '/assets/homepage.svg', title: 'Dashboard', desc: 'The homepage shows your upcoming to-dos, real-time task status percentages, and recently completed tasks — all pulled live from your task data.' },
+    { icon: '/assets/profile.svg', title: 'Profile & Settings', desc: 'Update your name, email, contact, and position anytime. You can also upload a profile photo (JPG/PNG, max 2 MB) which will show in the navbar.' },
+    { icon: '/assets/password.svg', title: 'Security', desc: 'Change your password from the Profile page. Your session is protected — you\'ll be redirected to login if not authenticated. Logout from the sidebar at any time.' },
 ];
 
 const FAQS = [
@@ -22,7 +22,7 @@ const FAQS = [
     },
     {
         q: 'What is a Vital Task and how does it work?',
-        a: 'A task is automatically flagged as Vital when it meets both conditions: Priority is set to High, AND Deadline is within the next 48 hours. You don\'t need to do anything manually — vital tasks appear on the Vital Task page automatically and are marked with a 🔥 badge.',
+        a: 'A task is automatically flagged as Vital when it meets both conditions: Priority is set to High, AND Deadline is within the next 48 hours. You don\'t need to do anything manually — vital tasks appear on the Vital Task page automatically and are marked with a fire badge.',
     },
     {
         q: 'How do I set a deadline for a task?',
@@ -42,60 +42,44 @@ const FAQS = [
     },
 ];
 
-function FaqItem({ q, a }) {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <div className="border border-border rounded-[10px] overflow-hidden bg-surface transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.07)]">
-            <button
-                onClick={() => setOpen(o => !o)}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left text-[14px] font-semibold
-                            text-ink gap-3 border-none cursor-pointer transition-colors font-sans
-                            ${open ? 'bg-fore text-pink-dark' : 'bg-transparent hover:bg-fore'}`}
-            >
-                {q}
-                <span className={`text-[16px] flex-shrink-0 transition-transform duration-250 text-muted
-                                  ${open ? 'rotate-180 text-pink-dark' : ''}`}>▾</span>
-            </button>
-
-            <div className={`faq-answer ${open ? 'open' : ''}`}>
-                <div className="faq-answer-inner border-t border-border px-5 py-4 text-[13px] text-muted leading-relaxed">
-                    {a}
-                </div>
-            </div>
-        </div>
-    );
-}
-
 export default function Help() {
     return (
         <AuthenticatedLayout>
             <Head title="Help Center" />
 
-            <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
-                <div>
-                    <h1 className="text-[22px] font-bold text-ink">Help Center</h1>
-                    <p className="text-[13px] text-muted mt-0.5">Learn how to use Taskly and get answers to common questions.</p>
-                </div>
+            <div className="mb-6">
+                <h1 className="text-[22px] font-bold text-ink m-0">Help Center</h1>
+                <p className="text-[13px] text-muted !mb-2">Learn how to use Taskly and get answers to common questions.</p>
             </div>
 
             {/* Help cards grid */}
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {HELP_CARDS.map(card => (
-                    <div key={card.title} className="bg-surface rounded-[10px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.07)]">
-                        <img src={card.icon} alt="" className="w-8 h-8 mb-3.5 block opacity-80" style={{ filter: 'brightness(0)' }} />
-                        <h3 className="text-[15px] font-bold mb-2">{card.title}</h3>
-                        <p className="text-[13px] text-muted leading-relaxed">{card.desc}</p>
+                    <div key={card.title} className="bg-surface rounded-2xl !p-6 shadow-sm border border-transparent hover:border-gray-100 transition-all">
+                        <img src={card.icon} alt="" className="w-8 h-8 !mb-2 block opacity-80" style={{ filter: 'brightness(0)' }} />
+                        <h3 className="text-[15px] font-bold mb-2 m-0">{card.title}</h3>
+                        <p className="text-[13px] text-muted leading-relaxed m-0">{card.desc}</p>
                     </div>
                 ))}
             </div>
 
             {/* FAQ */}
-            <h2 className="text-[18px] font-bold mt-9 mb-1">Frequently Asked Questions</h2>
-            <p className="text-[13px] text-muted mb-4">Click a question to expand the answer.</p>
+            <h2 className="text-[18px] font-bold !mt-10">Frequently Asked Questions</h2>
+            <p className="text-[13px] text-muted !mb-2">Click a question to expand the answer.</p>
 
             <div className="flex flex-col gap-3">
-                {FAQS.map(faq => <FaqItem key={faq.q} q={faq.q} a={faq.a} />)}
+                <Accordion type="single" collapsible className="flex flex-col gap-3">
+                    {FAQS.map((faq, index) => (
+                        <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-lg bg-surface px-2">
+                            <AccordionTrigger className="text-sm font-semibold text-pink-dark hover:no-underline !p-3">
+                                {faq.q}
+                            </AccordionTrigger>
+                            <AccordionContent className="border-t border-gray-300 text-xs text-muted leading-relaxed !p-2">
+                                {faq.a}
+                            </AccordionContent>
+                        </AccordionItem>
+                    ))}
+                </Accordion>
             </div>
         </AuthenticatedLayout>
     );
