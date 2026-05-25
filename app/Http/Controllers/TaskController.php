@@ -96,8 +96,8 @@ class TaskController extends Controller
             'priority'    => $task->priority,
             'deadline'    => $task->deadline?->format('Y-m-d H:i:s'),
             'is_vital'    => $task->is_vital,
-            'created_at'  => $task->created_at?->format('Y-m-d H:i:s'),
-            'updated_at'  => $task->updated_at?->format('Y-m-d H:i:s'),
+            'created_at'  => $task->created_at?->toIso8601String(),
+            'updated_at'  => $task->updated_at?->toIso8601String(),
             'category_id' => $task->category_id,
             'category'    => $task->category ? [
                 'id'    => $task->category->id,

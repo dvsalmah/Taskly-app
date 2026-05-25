@@ -34,31 +34,25 @@ class Task extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * A task is "vital" when:
-     *  - priority is high, AND
-     *  - not completed, AND
-     *  - (has no deadline OR deadline is within 48 hours or overdue by <24 h)
-     */
     public function getIsVitalAttribute(): bool
     {
         if ($this->status === 'completed') {
             return false;
         }
-        if ($this->priority !== 'high') {
-            return false;
+
+        if ($this->priority === 'high') {
+            return true;
         }
-        if (is_null($this->deadline)) {
-            return true; // high priority, no deadline → vital
+
+        if (!is_null($this->deadline)) {
+            if ($this->deadline->isBetween(now()->subHours(24), now()->addHours(48))) {
+                return true;
+            }
         }
-        $diff = $this->deadline->diffInSeconds(now(), false); // positive = past
-        // within next 48 h or overdue by < 24 h
-        return $this->deadline->diffInHours(now()) <= 48 || ($diff > 0 && $diff < 86400);
+
+        return false;
     }
 
-    /**
-     * Human-readable deadline countdown (mirrors PHP deadlineLabel()).
-     */
     public function getDeadlineLabelAttribute(): string
     {
         if (is_null($this->deadline)) {
@@ -73,9 +67,6 @@ class Task extends Model
         return 'Due ' . $this->deadline->format('d M Y, H:i');
     }
 
-    /**
-     * Human-readable "time ago" for created_at/updated_at.
-     */
     public static function timeAgo(?string $datetime): string
     {
         if (!$datetime) return '';

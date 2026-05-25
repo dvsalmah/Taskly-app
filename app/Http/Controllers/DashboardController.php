@@ -22,7 +22,6 @@ class DashboardController extends Controller
         $pctProgress  = $total > 0 ? round($inProg    / $total * 100) : 0;
         $pctNotStart  = $total > 0 ? round($notStart  / $total * 100) : 0;
 
-        // Up to 5 pending tasks (newest first)
         $todoTasks = $tasks->where('status', '!=', 'completed')
             ->sortByDesc('created_at')
             ->take(5)
@@ -31,7 +30,6 @@ class DashboardController extends Controller
 
         $totalTodo = $tasks->where('status', '!=', 'completed')->count();
 
-        // Up to 5 completed tasks (newest first)
         $doneTasks = $tasks->where('status', 'completed')
             ->sortByDesc('created_at')
             ->take(5)
@@ -64,8 +62,8 @@ class DashboardController extends Controller
             'priority'     => $task->priority,
             'deadline'     => $task->deadline?->format('Y-m-d H:i:s'),
             'is_vital'     => $task->is_vital,
-            'created_at'   => $task->created_at?->format('Y-m-d H:i:s'),
-            'updated_at'   => $task->updated_at?->format('Y-m-d H:i:s'),
+            'created_at'   => $task->created_at?->toIso8601String(),
+            'updated_at'   => $task->updated_at?->toIso8601String(),
             'category'     => $task->category ? [
                 'id'    => $task->category->id,
                 'name'  => $task->category->name,

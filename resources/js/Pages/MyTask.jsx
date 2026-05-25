@@ -37,10 +37,10 @@ function TaskCard({ task, onClick }) {
     }, [task.deadline]);
 
     const borderClasses = {
-        'completed': '!border-t-[#2ecc71]',
-        'vital': '!border-t-[#ef4444]',
-        'in_progress': '!border-t-[#3b82f6]',
-        'not_started': '!border-t-[#8c8b8b]',
+        'completed': '!border-b-[#2ecc71]',
+        'vital': '!border-b-[#ef4444]',
+        'in_progress': '!border-b-[#3b82f6]',
+        'not_started': '!border-b-[#8c8b8b]',
     };
 
     let colorKey = 'not_started';
@@ -55,7 +55,7 @@ function TaskCard({ task, onClick }) {
 
     return (
         <div onClick={onClick}
-             className={`!bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-t-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
+            className={`!bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-b-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
 
             <div className="flex gap-1.5 flex-wrap items-center">
                 {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="vital" className="w-3 h-3" /> Vital</Badge>}
@@ -312,7 +312,7 @@ export default function MyTask({ tasks, categories }) {
         return statusOk && priorityOk && searchOk;
     });
 
-    const chipBase   = '!px-4 !py-1.5 rounded-full text-xs font-semibold cursor-pointer border-[1.5px] border-border bg-white text-muted transition-all duration-200 select-none hover:border-pink-dark hover:bg-pink-dark hover:text-white';
+    const chipBase = '!px-4 !py-1.5 rounded-full text-xs font-semibold cursor-pointer border-[1.5px] border-border bg-white text-muted transition-all duration-200 select-none hover:border-pink-dark hover:bg-pink-dark hover:text-white';
     const chipActive = '!border-pink-dark !bg-pink-dark !text-white';
 
     return (
@@ -336,9 +336,9 @@ export default function MyTask({ tasks, categories }) {
             {/* Filter bar */}
             <div className="flex gap-3 !py-4 flex-wrap items-center">
                 <span className="text-sm font-semibold text-muted mr-1">Filter:</span>
-                {[['all','All'],['not_started','Not Started'],['in_progress','In Progress'],['completed','Completed']].map(([val, lbl]) => (
+                {[['all', 'All'], ['not_started', 'Not Started'], ['in_progress', 'In Progress'], ['completed', 'Completed']].map(([val, lbl]) => (
                     <button key={val} onClick={() => setActiveStatus(val)}
-                            className={`${chipBase} ${activeStatus === val ? chipActive : ''}`}>{lbl}</button>
+                        className={`${chipBase} ${activeStatus === val ? chipActive : ''}`}>{lbl}</button>
                 ))}
             </div>
 

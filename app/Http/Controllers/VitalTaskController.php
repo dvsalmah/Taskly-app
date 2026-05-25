@@ -15,7 +15,6 @@ class VitalTaskController extends Controller
 
         $vitalTasks = $user->tasks()
             ->with('category')
-            ->where('priority', 'high')
             ->where('status', '!=', 'completed')
             ->orderBy('deadline')
             ->get()
@@ -27,10 +26,10 @@ class VitalTaskController extends Controller
                 'description' => $t->description,
                 'status'      => $t->status,
                 'priority'    => $t->priority,
-                'deadline'    => $t->deadline?->format('Y-m-d H:i:s'),
+                'deadline'    => $t->deadline?->toIso8601String(),
                 'is_vital'    => true,
-                'created_at'  => $t->created_at?->format('Y-m-d H:i:s'),
-                'updated_at'  => $t->updated_at?->format('Y-m-d H:i:s'),
+                'created_at'  => $t->created_at?->toIso8601String(),
+                'updated_at'  => $t->updated_at?->toIso8601String(),
                 'category_id' => $t->category_id,
                 'category'    => $t->category ? [
                     'id'    => $t->category->id,
