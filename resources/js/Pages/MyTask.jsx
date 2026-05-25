@@ -3,6 +3,7 @@ import { Head, useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Badge from '@/Components/Badge';
 import Modal from '@/Components/Modal';
+import DeleteConfirmOverlay from '@/Components/DeleteConfirmOverlay';
 
 function deadlineLabel(dl) {
     if (!dl) return '';
@@ -35,15 +36,13 @@ function TaskCard({ task, onClick }) {
         return () => clearInterval(id);
     }, [task.deadline]);
 
-    // 1. Kamus Warna Border Atas murni Tailwind
     const borderClasses = {
-        'completed': '!border-t-[#2ecc71]',   // Hijau
-        'vital': '!border-t-[#ef4444]',       // Merah
-        'in_progress': '!border-t-[#3b82f6]', // Biru
-        'not_started': '!border-t-[#8c8b8b]', // Abu-abu
+        'completed': '!border-t-[#2ecc71]',
+        'vital': '!border-t-[#ef4444]',
+        'in_progress': '!border-t-[#3b82f6]',
+        'not_started': '!border-t-[#8c8b8b]',
     };
 
-    // 2. Logika Prioritas Garis Warna
     let colorKey = 'not_started';
     if (task.status?.toLowerCase() === 'completed') {
         colorKey = 'completed';
@@ -58,13 +57,11 @@ function TaskCard({ task, onClick }) {
         <div onClick={onClick}
              className={`!bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-t-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
 
-            {/* Baris 1: Badges (Priority & Vital di pucuk) */}
             <div className="flex gap-1.5 flex-wrap items-center">
                 {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="vital" className="w-3 h-3" /> Vital</Badge>}
                 <Badge variant={task.priority} />
             </div>
 
-            {/* Baris 2: Judul & Deskripsi */}
             <div className="flex flex-col gap-1">
                 <h4 className={`text-[15px] font-bold text-ink leading-snug line-clamp-2 m-0 
                     ${task.status?.toLowerCase() === 'completed' ? 'line-through opacity-50' : ''}`}>
@@ -75,7 +72,6 @@ function TaskCard({ task, onClick }) {
                 )}
             </div>
 
-            {/* Baris 3: Status & Kategori */}
             <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant={task.status} />
                 {task.category && (
@@ -86,7 +82,6 @@ function TaskCard({ task, onClick }) {
                 )}
             </div>
 
-            {/* Baris 4: Footer (Deadline & Time Ago) */}
             <div className="flex items-center justify-between mt-auto pt-1">
                 {task.deadline ? (
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1.5 
@@ -103,7 +98,7 @@ function TaskCard({ task, onClick }) {
     );
 }
 
-/* ── Add/Edit Form ────────────────────────────────────────── */
+/* Add/Edit Form */
 function TaskForm({ task, categories, onClose, mode = 'add' }) {
     const { data, setData, post, patch, processing, errors, reset } = useForm({
         title: task?.title ?? '',
@@ -124,31 +119,31 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
         }
     };
 
-    const labelCls = 'block text-[13px] font-semibold text-ink mb-1.5';
-    const inputCls = 'w-full border-[1.5px] border-border rounded-lg px-3.5 py-2.5 text-[14px] text-ink bg-surface font-sans outline-none transition-colors focus:border-pink-dark';
+    const labelCls = 'block text-sm font-semibold text-ink';
+    const inputCls = 'w-full border-[1.5px] border-border rounded-lg !px-2 !py-1.5 text-sm text-ink bg-surface font-sans outline-none transition-colors focus:border-pink-dark';
 
     return (
-        <form onSubmit={submit}>
-            <div className="flex items-center justify-between mb-4">
+        <form onSubmit={submit} className="flex flex-col !p-6 gap-3">
+            <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold">{mode === 'add' ? 'Add New Task' : 'Edit Task'}</h2>
                 <button type="button" onClick={onClose}
                     className="text-muted hover:text-ink text-[22px] leading-none border-none bg-transparent cursor-pointer px-1.5 rounded transition-colors">✕</button>
             </div>
 
-            <div className="mb-4">
+            <div className="flex flex-col gap-1">
                 <label className={labelCls}>Task Title *</label>
                 <input type="text" className={inputCls} placeholder="Enter task title…"
                     value={data.title} onChange={e => setData('title', e.target.value)} required />
                 {errors.title && <p className="text-[12px] text-error-text mt-1">{errors.title}</p>}
             </div>
 
-            <div className="mb-4">
+            <div className="flex flex-col gap-1">
                 <label className={labelCls}>Description</label>
                 <textarea className={`${inputCls} resize-y min-h-[80px]`} placeholder="Optional description…"
                     value={data.description} onChange={e => setData('description', e.target.value)} />
             </div>
 
-            <div className="grid grid-cols-2 gap-3.5 mb-4">
+            <div className="grid grid-cols-2 gap-3.5">
                 <div>
                     <label className={labelCls}>Priority</label>
                     <select className={inputCls} value={data.priority} onChange={e => setData('priority', e.target.value)}>
@@ -167,7 +162,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
                 </div>
             </div>
 
-            <div className="mb-4">
+            <div className="flex flex-col gap-1">
                 <label className={labelCls}>Category</label>
                 <select className={inputCls} value={data.category_id ?? ''} onChange={e => setData('category_id', e.target.value)}>
                     <option value="">— No category —</option>
@@ -175,20 +170,22 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
                 </select>
             </div>
 
-            <div className="mb-4">
+            <div className="flex flex-col gap-1">
                 <label className={labelCls}>Deadline (optional)</label>
                 <input type="datetime-local" className={inputCls}
                     value={data.deadline} onChange={e => setData('deadline', e.target.value)}
                     min={new Date().toISOString().slice(0, 16)} />
             </div>
 
-            <div className="flex justify-end gap-2.5 mt-5 pt-4 border-t border-border">
+            <div className="flex items-center justify-end gap-2.5 mt-5 pt-4">
                 <button type="button" onClick={onClose}
-                    className="px-[18px] py-2 rounded-lg text-[13px] font-semibold text-muted border border-border bg-transparent cursor-pointer hover:bg-fore hover:text-ink transition-colors">
+                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
+                               border border-gray-200 text-ink bg-fore
+                               hover:bg-border transition-all cursor-pointer">
                     Cancel
                 </button>
                 <button type="submit" disabled={processing}
-                    className="px-[18px] py-2 rounded-lg text-[13px] font-semibold text-white bg-pink-dark border-none cursor-pointer transition-all hover:bg-pink hover:-translate-y-px disabled:opacity-70">
+                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80 disabled:opacity-70">
                     {processing ? 'Saving…' : (mode === 'add' ? 'Add Task' : 'Save Changes')}
                 </button>
             </div>
@@ -196,7 +193,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
     );
 }
 
-/* ── Preview Modal ────────────────────────────────────────── */
+/* Preview Modal */
 function PreviewModal({ task, categories, onClose, onEdit }) {
     const [dlLabel, setDlLabel] = useState(() => deadlineLabel(task?.deadline));
     useEffect(() => {
@@ -211,17 +208,17 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
         router.patch(`/my-task/${task.id}/status`, { status: e.target.value }, { preserveScroll: true });
     };
 
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
     const handleDelete = () => {
-        if (confirm('Delete this task?')) {
-            router.delete(`/my-task/${task.id}`, { onSuccess: onClose });
-        }
+        router.delete(`/my-task/${task.id}`, { onSuccess: onClose });
     };
 
     if (!task) return null;
 
     return (
-        <>
-            <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
+        <div className='flex flex-col !p-6 gap-3'>
+            <div className="flex items-start justify-between gap-3 ">
                 <div className="flex items-center gap-2 flex-wrap">
                     {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="" className="w-3 h-3" /> Vital</Badge>}
                     <Badge variant={task.priority} />
@@ -254,7 +251,6 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                 )}
             </div>
 
-            {/* Status updater */}
             <div className="mt-4 flex items-center gap-2.5 flex-wrap">
                 <label className="text-[13px] font-semibold text-muted">Update Status:</label>
                 <select defaultValue={task.status} onChange={handleStatusChange}
@@ -265,24 +261,31 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                 </select>
             </div>
 
-            <div className="flex items-center gap-2.5 mt-5 pt-4 border-t border-border">
-                <button onClick={handleDelete}
-                    className="inline-flex items-center gap-1.5 px-[18px] py-2 rounded-lg text-[13px] font-semibold
-                                   bg-[#FFEBEE] text-[#C62828] border border-[#EF9A9A] cursor-pointer
-                                   hover:bg-[#C62828] hover:text-white transition-colors">
-                    <img src="/assets/trash.svg" alt="" className="w-4 h-4" /> Delete
-                </button>
+            <div className="flex items-center justify-end gap-2.5 mt-5 pt-4">
                 <button onClick={onEdit}
-                    className="inline-flex items-center gap-1.5 px-[18px] py-2 rounded-lg text-[13px] font-semibold
-                                   bg-transparent text-muted border border-border cursor-pointer hover:bg-fore hover:text-ink transition-colors">
+                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
+                                           border border-gray-200 text-ink bg-fore
+                                           hover:bg-border  transition-all cursor-pointer">
                     <img src="/assets/edit.svg" alt="" className="w-4 h-4" /> Edit
                 </button>
+                <button onClick={() => setShowDeleteConfirm(true)}
+                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80">
+                    <img src="/assets/trash.svg" alt="" className="w-4 h-4" /> Delete
+                </button>
             </div>
-        </>
+
+            {showDeleteConfirm && (
+                <DeleteConfirmOverlay
+                    itemName={task.title}
+                    onCancel={() => setShowDeleteConfirm(false)}
+                    onConfirm={handleDelete}
+                />
+            )}
+        </div>
     );
 }
 
-/* ── My Task Page ────────────────────────────────────────── */
+/* My Task Page  */
 export default function MyTask({ tasks, categories }) {
     const [activeStatus, setActiveStatus] = useState('all');
     const [activePriority, setActivePriority] = useState('all');
