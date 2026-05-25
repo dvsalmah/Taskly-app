@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
+import DeleteConfirmOverlay from '@/Components/DeleteConfirmOverlay';
 
 const PRESETS = ['#EC003F','#FF6F00','#F9A825','#2E7D32','#1565C0','#6A1B9A','#00838F','#4E342E','#546E7A'];
 
 function CategoryCard({ cat, onDelete }) {
     return (
-        <div className="!bg-white rounded-2xl !p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]
+        <div className="!bg-surface rounded-2xl !p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]
                         flex items-center gap-4 border-t-4 transition-all duration-200 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
              style={{ borderTopColor: cat.color }}>
             <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ background: cat.color }} />
@@ -16,7 +17,7 @@ function CategoryCard({ cat, onDelete }) {
                 <div className="text-[13px] text-muted font-medium">{cat.tasks_count} task{cat.tasks_count !== 1 ? 's' : ''}</div>
             </div>
             <button onClick={() => onDelete(cat)}
-                    className="flex flex-col items-center justify-center bg-red-400 h-6 w-6 rounded-lg cursor-pointer text-muted
+                    className="flex flex-col items-center justify-center bg-red-500 h-8 w-8 rounded-lg cursor-pointer text-muted
                                hover:red-500 transition-colors p-1" title="Delete category">
                 <img src="/assets/trash.svg" alt="delete" className="w-4 h-4" />
             </button>
@@ -39,23 +40,23 @@ function AddCategoryForm({ onClose }) {
     };
 
     return (
-        <form onSubmit={submit}>
-            <div className="flex items-center justify-between mb-4">
+        <form onSubmit={submit} className="flex flex-col !p-6 gap-3">
+            <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold text-ink">New Category</h2>
                 <button type="button" onClick={onClose}
                         className="text-muted hover:text-ink text-[22px] leading-none border-none bg-transparent cursor-pointer px-1.5 rounded transition-colors">✕</button>
             </div>
 
-            <div className="mb-4">
-                <label className="block text-[13px] font-semibold text-ink mb-1.5">Category Name *</label>
-                <input type="text" placeholder="e.g. Work, Personal, Study…" required
+            <div className="flex flex-col gap-1">
+                <label className="block text-sm font-semibold text-ink">Category Name *</label>
+                <input type="text" placeholder="e.g. Work, Personal, Study" required
                        value={name} onChange={e => setName(e.target.value)}
-                       className="w-full border-[1.5px] border-border rounded-lg px-3.5 py-2.5 text-[14px] text-ink bg-surface font-sans outline-none focus:border-pink-dark" />
+                       className="w-full border-[1.5px] border-border rounded-lg !px-2 !py-1.5 text-sm text-ink bg-surface font-sans outline-none focus:border-pink-dark transition-colors" />
             </div>
 
-            <div className="mb-4">
-                <label className="block text-[13px] font-semibold text-ink mb-2">Pick a Color</label>
-                <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-col gap-1">
+                <label className="block text-sm font-semibold text-ink">Pick a Color</label>
+                <div className="flex gap-2 flex-wrap !pb-2">
                     {PRESETS.map(hex => (
                         <button key={hex} type="button"
                                 onClick={() => setColor(hex)}
@@ -64,19 +65,17 @@ function AddCategoryForm({ onClose }) {
                                 style={{ background: hex }} title={hex} />
                     ))}
                 </div>
-                <div className="flex items-center gap-2 mt-3">
-                    <div className="w-6 h-6 rounded-full flex-shrink-0" style={{ background: color }} />
-                    <span className="text-[12px] text-muted font-mono">{color}</span>
-                </div>
             </div>
 
-            <div className="flex justify-end gap-2.5 mt-5 pt-4 border-t border-border">
+            <div className="flex items-center justify-end gap-2.5 mt-5 pt-4">
                 <button type="button" onClick={onClose}
-                        className="px-[18px] py-2 rounded-lg text-[13px] font-semibold text-muted border border-border bg-transparent cursor-pointer hover:bg-fore hover:text-ink transition-colors">
+                        className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
+                                   border border-gray-200 text-ink bg-fore
+                                   hover:bg-border transition-all cursor-pointer">
                     Cancel
                 </button>
                 <button type="submit" disabled={busy}
-                        className="px-[18px] py-2 rounded-lg text-[13px] font-semibold text-white bg-pink-dark border-none cursor-pointer transition-all hover:bg-pink hover:-translate-y-px disabled:opacity-70">
+                        className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80 disabled:opacity-70">
                     {busy ? 'Creating…' : 'Create'}
                 </button>
             </div>
@@ -87,9 +86,15 @@ function AddCategoryForm({ onClose }) {
 export default function TaskCategory({ categories }) {
     const [modalOpen, setModalOpen] = useState(false);
 
-    const handleDelete = (cat) => {
-        if (confirm(`Delete category "${cat.name}"? Tasks will keep their data.`)) {
-            router.delete(`/task-category/${cat.id}`);
+    const [deleteCat, setDeleteCat] = useState(null);
+
+    const handleDeleteClick = (cat) => {
+        setDeleteCat(cat);
+    };
+
+    const confirmDelete = () => {
+        if (deleteCat) {
+            router.delete(`/task-category/${deleteCat.id}`, { onSuccess: () => setDeleteCat(null) });
         }
     };
 
@@ -120,7 +125,7 @@ export default function TaskCategory({ categories }) {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {categories.map(cat => (
-                        <CategoryCard key={cat.id} cat={cat} onDelete={handleDelete} />
+                        <CategoryCard key={cat.id} cat={cat} onDelete={handleDeleteClick} />
                     ))}
                 </div>
             )}
@@ -129,6 +134,16 @@ export default function TaskCategory({ categories }) {
             <Modal open={modalOpen} onClose={() => setModalOpen(false)} maxWidth="max-w-[400px]">
                 <AddCategoryForm onClose={() => setModalOpen(false)} />
             </Modal>
+
+            {/* Delete Overlay */}
+            {deleteCat && (
+                <DeleteConfirmOverlay
+                    itemName={deleteCat.name}
+                    isCategory={true}
+                    onCancel={() => setDeleteCat(null)}
+                    onConfirm={confirmDelete}
+                />
+            )}
         </AuthenticatedLayout>
     );
 }
