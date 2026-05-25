@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
+import AnimatedTask from '@/Components/AnimatedTask';
 
 function EyeOpen() {
     return (
@@ -33,7 +34,7 @@ function strengthInfo(password) {
     return { score, label: labels[score], color: colors[score] };
 }
 
-export default function Register() {
+const Register = () => {
     const [showPw, setShowPw] = useState(false);
     const [showCfm, setShowCfm] = useState(false);
     const [pwStrength, setPwStrength] = useState(null);
@@ -62,157 +63,179 @@ export default function Register() {
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Register" />
-
-            {/* Card */}
-            <div className="auth-card" style={{
-                borderRadius: '20px',
-                width: '100%',
-                maxWidth: '1100px',
-                display: 'flex',
-                overflow: 'hidden',
-                boxShadow: '0 8px 40px rgba(0,0,0,0.13)',
-            }}>
-                {/* Logo side */}
-                <div className="auth-logo-side">
-                    <img src="/assets/taskly.svg" alt="Taskly Logo" style={{ width: '200px', height: '200px', objectFit: 'contain' }} />
+            <div className="w-full max-w-md flex flex-col gap-5">
+                <div className="text-center mb-1">
+                    <img src="/assets/taskly-HD.png" alt="Taskly Logo" className="flex items-center justify-center h-12 !mx-auto !mb-6 object-contain" />
+                    <h1 className="text-[32px] font-bold text-[#2D2D2D] tracking-tight mb-2">Get Started!</h1>
+                    <p className="text-gray-500 text-[15px]">Start your productive journey</p>
                 </div>
 
-                {/* Form side */}
-                <div style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    padding: '40px 48px',
-                    overflowY: 'auto',
-                }}>
-                    <h1 style={{
-                        fontSize: '28px',
-                        fontWeight: '700',
-                        color: '#2D2D2D',
-                        textAlign: 'center',
-                        marginBottom: '6px',
-                        letterSpacing: '-0.5px',
-                        fontFamily: "'DM Sans', sans-serif",
-                    }}>Stay on track!</h1>
-                    <p style={{
-                        textAlign: 'center',
-                        fontSize: '15px',
-                        color: '#888',
-                        marginBottom: '24px',
-                        fontFamily: "'DM Sans', sans-serif",
-                    }}>Start your productive journey</p>
+                {errors.email && (
+                    <div className="bg-[#FFEBEE] text-[#C62828] border border-[#EF9A9A] rounded-xl px-4 py-3 text-sm">
+                        {errors.email}
+                    </div>
+                )}
+                {errors.username && (
+                    <div className="bg-[#FFEBEE] text-[#C62828] border border-[#EF9A9A] rounded-xl px-4 py-3 text-sm">
+                        {errors.username}
+                    </div>
+                )}
 
-                    {errors.email && (
-                        <div style={{ background: '#FFEBEE', color: '#C62828', border: '1px solid #EF9A9A', borderRadius: '10px', padding: '10px 14px', fontSize: '13px', marginBottom: '12px' }}>
-                            {errors.email}
+                <form onSubmit={submit} className="flex flex-col gap-4">
+                    {/* First Name & Last Name */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <div className="relative flex items-center">
+                                <img src="/assets/username.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                                <input 
+                                    type="text" 
+                                    placeholder="First Name"
+                                    value={data.first_name} 
+                                    onChange={e => setData('first_name', e.target.value)} 
+                                    className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                    required 
+                                />
+                            </div>
+                            {errors.first_name && <p className="text-xs text-[#C62828] mt-1 ml-1">{errors.first_name}</p>}
                         </div>
-                    )}
-                    {errors.username && (
-                        <div style={{ background: '#FFEBEE', color: '#C62828', border: '1px solid #EF9A9A', borderRadius: '10px', padding: '10px 14px', fontSize: '13px', marginBottom: '12px' }}>
-                            {errors.username}
+                        <div>
+                            <div className="relative flex items-center">
+                                <img src="/assets/username.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                                <input 
+                                    type="text" 
+                                    placeholder="Last Name"
+                                    value={data.last_name} 
+                                    onChange={e => setData('last_name', e.target.value)} 
+                                    className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !px-12 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                    required 
+                                />
+                            </div>
                         </div>
-                    )}
+                    </div>
 
-                    <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {/* First name */}
-                        <div className="auth-input-group">
-                            <img src="/assets/username.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type="text" placeholder="Enter First Name"
-                                value={data.first_name} onChange={e => setData('first_name', e.target.value)} required />
+                    {/* Email */}
+                    <div>
+                        <div className="relative flex items-center ">
+                            <img src="/assets/mail.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <input 
+                                type="email" 
+                                placeholder="Email Address"
+                                value={data.email} 
+                                onChange={e => setData('email', e.target.value)} 
+                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 pr-4 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                required 
+                            />
                         </div>
-                        {errors.first_name && <p style={{ fontSize: '12px', color: '#C62828', paddingLeft: '4px' }}>{errors.first_name}</p>}
+                    </div>
 
-                        {/* Last name */}
-                        <div className="auth-input-group">
-                            <img src="/assets/username.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type="text" placeholder="Enter Last Name"
-                                value={data.last_name} onChange={e => setData('last_name', e.target.value)} required />
+                    {/* Username */}
+                    <div>
+                        <div className="relative flex items-center">
+                            <svg className="absolute left-4 w-5 h-5 opacity-40 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <input 
+                                type="text" 
+                                placeholder="Username"
+                                value={data.username} 
+                                onChange={e => setData('username', e.target.value)} 
+                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 pr-4 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                required 
+                            />
                         </div>
+                    </div>
 
-                        {/* Username */}
-                        <div className="auth-input-group">
-                            <img src="/assets/user.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type="text" placeholder="Enter Username"
-                                value={data.username} onChange={e => setData('username', e.target.value)} required />
-                        </div>
-
-                        {/* Email */}
-                        <div className="auth-input-group">
-                            <img src="/assets/mail.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type="email" placeholder="Enter Email"
-                                value={data.email} onChange={e => setData('email', e.target.value)} required />
-                        </div>
-
-                        {/* Password */}
-                        <div className="auth-input-group">
-                            <img src="/assets/password.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type={showPw ? 'text' : 'password'} placeholder="Enter Password"
-                                value={data.password} onChange={e => handlePasswordChange(e.target.value)} required />
-                            <button type="button" className="eye-btn" onClick={() => setShowPw(v => !v)}>
-                                {showPw ? <EyeOpen /> : <EyeOff />}
+                    {/* Password */}
+                    <div>
+                        <div className="relative flex items-center">
+                            <img src="/assets/password.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <input 
+                                type={showPw ? 'text' : 'password'} 
+                                placeholder="Password"
+                                value={data.password} 
+                                onChange={e => handlePasswordChange(e.target.value)} 
+                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 pr-[46px] text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                required 
+                            />
+                            <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
+                                {showPw ? <EyeOff /> : <EyeOpen />}
                             </button>
                         </div>
-                        {pwStrength && pwStrength.score < 4 && (
-                            <p style={{ fontSize: '12px', fontWeight: '500', paddingLeft: '4px', color: pwStrength.color }}>
-                                ● Strength: {pwStrength.label}
-                            </p>
+                        {pwStrength && (
+                            <div className="mt-2 ml-1">
+                                <div className="flex gap-1 h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div 
+                                            key={i} 
+                                            className="flex-1 h-full transition-all duration-300"
+                                            style={{ backgroundColor: i <= pwStrength.score ? pwStrength.color : 'transparent' }}
+                                        />
+                                    ))}
+                                </div>
+                                <p className="text-[11px] font-semibold mt-1" style={{ color: pwStrength.color }}>
+                                    {pwStrength.label} Password
+                                </p>
+                            </div>
                         )}
+                        {errors.password && <p className="text-xs text-[#C62828] mt-1 ml-1">{errors.password}</p>}
+                    </div>
 
-                        {/* Confirm password */}
-                        <div className="auth-input-group">
-                            <img src="/assets/password.svg" alt="" style={{ width: '16px', height: '16px', opacity: 0.55, flexShrink: 0 }} />
-                            <input type={showCfm ? 'text' : 'password'} placeholder="Confirm Password"
-                                value={data.password_confirmation} onChange={e => setData('password_confirmation', e.target.value)} required />
-                            <button type="button" className="eye-btn" onClick={() => setShowCfm(v => !v)}>
-                                {showCfm ? <EyeOpen /> : <EyeOff />}
+                    {/* Confirm Password */}
+                    <div>
+                        <div className="relative flex items-center">
+                            <img src="/assets/password.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <input 
+                                type={showCfm ? 'text' : 'password'} 
+                                placeholder="Confirm Password"
+                                value={data.password_confirmation} 
+                                onChange={e => setData('password_confirmation', e.target.value)} 
+                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !px-12 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
+                                required 
+                            />
+                            <button type="button" onClick={() => setShowCfm(!showCfm)} className="absolute right-4 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
+                                {showCfm ? <EyeOff /> : <EyeOpen />}
                             </button>
                         </div>
-                        {errors.password && <p style={{ fontSize: '12px', color: '#C62828', paddingLeft: '4px' }}>{errors.password}</p>}
+                    </div>
 
-                        {/* Agree */}
-                        <label style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            fontSize: '13px', color: '#2D2D2D', cursor: 'pointer',
-                            fontFamily: "'DM Sans', sans-serif", marginTop: '2px',
-                        }}>
-                            <input type="checkbox" checked={data.agree}
+                    {/* Checkbox */}
+                    <div className="flex mt-1">
+                        <label className="flex items-start gap-2.5 cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                checked={data.agree}
                                 onChange={e => setData('agree', e.target.checked)}
-                                required style={{ width: '15px', height: '15px', flexShrink: 0, accentColor: '#861043', cursor: 'pointer' }} />
-                            I agree to Terms of Service and Privacy Policy
+                                className="mt-0.5 w-[18px] h-[18px] rounded-[6px] border-2 border-gray-300 text-pink-dark focus:ring-pink-dark focus:ring-offset-0 transition-all group-hover:border-pink-dark"
+                                required
+                            />
+                            <span className="text-[13px] text-gray-500 font-medium leading-tight">
+                                I agree to the <a href="#" className="text-pink-dark hover:underline font-bold">Terms of Service</a> and <a href="#" className="text-pink-dark hover:underline font-bold">Privacy Policy</a>
+                            </span>
                         </label>
+                    </div>
 
-                        {/* Submit */}
-                        <button type="submit" disabled={processing} style={{
-                            width: '100%',
-                            background: '#861043',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '50px',
-                            padding: '14px',
-                            fontSize: '15px',
-                            fontWeight: '600',
-                            cursor: processing ? 'not-allowed' : 'pointer',
-                            opacity: processing ? 0.7 : 1,
-                            fontFamily: "'DM Sans', sans-serif",
-                            letterSpacing: '0.5px',
-                            marginTop: '6px',
-                            transition: 'background 0.2s',
-                        }}>
-                            {processing ? 'Creating account…' : 'Register'}
-                        </button>
+                    <button 
+                        type="submit" 
+                        disabled={processing || !data.agree}
+                        className="w-full flex items-center justify-center bg-pink-dark hover:brightness-110 text-white h-14 rounded-[16px] font-bold text-[15px] transition-all hover:shadow-lg active:scale-[0.98] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {processing ? 'Creating Account...' : 'Create Account'}
+                    </button>
+                </form>
 
-                        <p style={{ textAlign: 'center', fontSize: '13px', color: '#2D2D2D', marginTop: '10px', fontFamily: "'DM Sans', sans-serif" }}>
-                            Already have an account?{' '}
-                            <Link href="/login" style={{ color: '#2979FF', fontWeight: '600', textDecoration: 'none' }}>
-                                Login here
-                            </Link>
-                        </p>
-                    </form>
-                </div>
+                <p className="text-center text-gray-500 text-[15px] font-medium mt-2">
+                    Already have an account?{' '}
+                    <Link 
+                        href="/login" 
+                        className="text-pink-dark font-bold hover:text-pink-dark/80 transition-colors"
+                    >
+                        Sign In
+                    </Link>
+                </p>
             </div>
-        </GuestLayout>
+        </>
     );
-}
+};
+
+Register.layout = page => <GuestLayout children={page} />;
+export default Register;
