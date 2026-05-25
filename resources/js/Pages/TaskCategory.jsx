@@ -9,8 +9,8 @@ const PRESETS = ['#EC003F','#FF6F00','#F9A825','#2E7D32','#1565C0','#6A1B9A','#0
 function CategoryCard({ cat, onDelete }) {
     return (
         <div className="!bg-surface rounded-2xl !p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]
-                        flex items-center gap-4 border-t-4 transition-all duration-200 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
-             style={{ borderTopColor: cat.color }}>
+                        flex items-center gap-4 border-b-4 transition-all duration-200 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
+             style={{ borderBottomColor: cat.color }}>
             <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ background: cat.color }} />
             <div className="flex-1 min-w-0">
                 <div className="text-[15px] font-bold text-ink">{cat.name}</div>
