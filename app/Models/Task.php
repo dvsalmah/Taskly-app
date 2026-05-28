@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class Task extends Model
 {
@@ -12,17 +13,28 @@ class Task extends Model
 
     protected $fillable = [
         'user_id',
+        'username',
         'category_id',
         'title',
         'description',
         'priority',
         'status',
         'deadline',
+        'referral_code',
     ];
 
     protected $casts = [
         'deadline' => 'datetime',
     ];
+
+    public static function generateReferralCode(): string
+    {
+        do {
+            $code = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 6);
+        } while (static::where('referral_code', $code)->exists());
+
+        return $code;
+    }
 
     public function user()
     {
@@ -32,6 +44,16 @@ class Task extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function collaborators()
+    {
+        return $this->belongsToMany(User::class, 'task_collaborators')->withTimestamps();
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(TaskInvitation::class);
     }
 
     public function getIsVitalAttribute(): bool
@@ -58,7 +80,7 @@ class Task extends Model
         if (is_null($this->deadline)) {
             return '';
         }
-        $diff = now()->diffInSeconds($this->deadline, false); // negative = past
+        $diff = now()->diffInSeconds($this->deadline, false);
         if ($diff < -86400)  return 'Overdue';
         if ($diff < 0)       return 'Due today (overdue)';
         if ($diff < 3600)    return 'Due in ' . ceil($diff / 60) . ' min';

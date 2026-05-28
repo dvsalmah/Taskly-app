@@ -1,18 +1,13 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CollabController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\VitalTaskController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -27,6 +22,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/my-task/{task}',          [TaskController::class, 'update'])->name('task.update');
     Route::delete('/my-task/{task}',         [TaskController::class, 'destroy'])->name('task.destroy');
     Route::patch('/my-task/{task}/status',   [TaskController::class, 'updateStatus'])->name('task.status');
+
+    // Collab
+    Route::post('/collab/join',                     [CollabController::class, 'joinByCode'])->name('collab.join');
+    Route::post('/collab/respond/{invitation}',     [CollabController::class, 'respond'])->name('collab.respond');
+    Route::get('/collab/notifications',             [CollabController::class, 'notifications'])->name('collab.notifications');
+    Route::get('/collab/unread',                    [CollabController::class, 'unreadCount'])->name('collab.unread');
 
     // Vital Task
     Route::get('/vital-task', [VitalTaskController::class, 'index'])->name('vital-task');

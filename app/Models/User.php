@@ -41,12 +41,17 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'username', 'username');
+        return $this->hasMany(Task::class);
     }
 
     public function categories()
     {
         return $this->hasMany(Category::class, 'username', 'username');
+    }
+
+    public function collaboratingTasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_collaborators')->withTimestamps();
     }
 
     /**
