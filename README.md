@@ -1,66 +1,249 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="180" />
 </p>
 
-## About Laravel
+<h1 align="center">Taskly</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <b>A modern, collaborative task management web application.</b><br/>
+  Built with Laravel, Inertia.js, and React — designed for individuals and teams.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-10.x-red?style=flat-square&logo=laravel" alt="Laravel" />
+  <img src="https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react" />
+  <img src="https://img.shields.io/badge/Inertia.js-1.x-purple?style=flat-square" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4.x-38bdf8?style=flat-square&logo=tailwindcss" />
+  <img src="https://img.shields.io/badge/Vite-5.x-646cff?style=flat-square&logo=vite" />
+  <img src="https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php" />
+</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📖 About
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Taskly** is a full-stack task management application that helps users organize their personal tasks and collaborate with others in real time. Taskly offers a clean, responsive interface with a premium design — featuring dark-accented aesthetics, micro-animations, and intuitive workflows.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ✨ Features
 
-## Laravel Sponsors
+### 🗂️ Task Management
+- **Create, edit, delete** tasks with title, description, priority, status, deadline, and category
+- **Three priority levels** — Low, Medium, High — each visually distinguished by color-coded badges
+- **Three statuses** — Not Started, In Progress, Completed — with inline status switching directly from the task preview panel
+- **Deadline tracking** — displays countdowns (e.g., "in 2d") and overdue warnings
+- **Filter & search** tasks by status, priority, or keyword in real time
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### ⭐ Vital Tasks
+- Mark tasks as **Vital** to pin them in a dedicated high-priority view
+- Vital tasks are visually highlighted with a fire 🔥 badge and a red border accent
 
-### Premium Partners
+### 🗃️ Task Categories
+- Create color-coded categories to group and organize tasks
+- Choose from a palette of preset colors or pick a custom one
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 🤝 Collab Tasks *(Collaborative)*
+- Each task has a unique **invite code**
+- Share the code with teammates to invite them to join a task
+- Task author receives a **notification** with Accept / Decline controls
+- Collab tasks are marked with a 👥 group icon on the card
 
-## Contributing
+### 🔔 Notifications
+- In-app notification **popover** accessible from the navbar
+- Polls every 15 seconds for new join requests (lightweight, no WebSockets required)
+- Notifications are auto-marked as read when the popover is opened
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 📊 Dashboard
+- Overview of total tasks, completed count, in-progress, and vital tasks
+- Visual progress indicator and recent activity
 
-## Code of Conduct
+### 👤 Profile Management
+- Update name, email, contact, position/role
+- Upload a **profile photo** 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🔐 Authentication
+- Register / Login / Forgot Password / Reset Password
+- Fully custom-styled auth pages matching the Taskly design system
+- Password visibility toggle on all password inputs
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Tech Stack
 
-## License
+| Layer | Technology |
+|---|---|
+| **Backend** | [Laravel 10](https://laravel.com/) (PHP 8.1+) |
+| **Frontend** | [React 18](https://react.dev/) + [Inertia.js](https://inertiajs.com/) |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) |
+| **Build Tool** | [Vite 5](https://vitejs.dev/) |
+| **Database** | MySQL (with SQLite support for local dev) |
+| **Auth** | Laravel Breeze (custom UI) |
+| **Routing** | Ziggy (Laravel routes in JS) |
+| **Typography** | [Geist Variable](https://vercel.com/font) |
+| **UI Primitives** | Base UI, Headless UI |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🚀 Getting Started
+
+
+### Installation
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/dvsalmah/taskly-app.git
+cd taskly-app
+```
+
+**2. Install PHP dependencies**
+```bash
+composer install
+```
+
+**3. Install Node dependencies**
+```bash
+npm install
+```
+
+**4. Set up environment**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+**5. Configure your database**
+
+Edit `.env` and set your database credentials:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=taskly
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**6. Run migrations**
+```bash
+php artisan migrate
+```
+
+**7. Link storage (for photo uploads)**
+```bash
+php artisan storage:link
+```
+
+---
+
+### Running Locally
+
+Open **two terminals** simultaneously:
+
+```bash
+# Terminal 1 — Laravel backend
+php artisan serve
+
+# Terminal 2 — Vite frontend (hot reload)
+npm run dev
+```
+
+The app will be available at **http://localhost:8000**
+
+---
+
+### Production Build
+
+```bash
+npm run build
+php artisan serve
+```
+
+---
+
+## 📁 Project Structure
+
+```
+taskly-app/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/                   # Login, Register, Password reset
+│   │   │   ├── CategoryController.php  # Task category CRUD
+│   │   │   ├── CollabController.php    # Join requests, notifications, accept/decline
+│   │   │   ├── DashboardController.php # Dashboard stats
+│   │   │   ├── HelpController.php      # Help page
+│   │   │   ├── ProfileController.php   # Profile view & update
+│   │   │   ├── TaskController.php      # Task CRUD + collab task loading
+│   │   │   └── VitalTaskController.php # Vital task toggle & view
+│   │   └── Requests/
+│   │       └── ProfileUpdateRequest.php
+│   └── Models/
+│       ├── Category.php
+│       ├── Task.php                    # Relationships, referral code generator
+│       ├── TaskInvitation.php          # Collab join request model
+│       └── User.php
+│
+├── database/
+│   └── migrations/
+│       ├── create_users_table.php
+│       ├── create_categories_table.php
+│       ├── create_tasks_table.php
+│       ├── add_referral_code_to_tasks_table.php
+│       ├── create_task_collaborators_table.php  # Pivot: user ↔ task
+│       └── create_task_invitations_table.php    # Join request records
+│
+├── resources/
+│   └── js/
+│       ├── Components/
+│       │   ├── Badge.jsx               # Priority/status/vital badges
+│       │   ├── DeleteConfirmOverlay.jsx
+│       │   ├── JoinTaskModal.jsx       # Collab referral code input modal
+│       │   ├── Modal.jsx               # Generic modal wrapper
+│       │   ├── Navbar.jsx              # Top nav with search, notif popover, calendar
+│       │   └── Sidebar.jsx             # Navigation sidebar
+│       ├── Layouts/
+│       │   └── AuthenticatedLayout.jsx
+│       └── Pages/
+│           ├── Auth/                   # Login, Register, ForgotPassword, ResetPassword
+│           ├── Profile/
+│           │   └── Edit.jsx            # Profile settings page
+│           ├── Dashboard.jsx           # Overview & stats
+│           ├── Help.jsx                # FAQ / how-to guide
+│           ├── MyTask.jsx              # Main task board (CRUD + collab)
+│           ├── TaskCategory.jsx        # Category management
+│           ├── VitalTask.jsx           # Vital tasks view
+│           └── Welcome.jsx             # Landing page
+│
+├── routes/
+│   └── web.php                         # All application routes
+│
+├── public/
+│   └── assets/                         # SVG icons, images, logo
+│
+├── .env.example
+├── composer.json
+├── package.json
+└── vite.config.js
+```
+
+---
+
+## 🗄️ Database Schema
+
+```
+users               — id, username, first_name, last_name, email, contact, position, photo, password
+categories          — id, user_id, name, color
+tasks               — id, user_id, username, category_id, title, description, priority, status, deadline, referral_code, is_vital
+task_collaborators  — task_id, user_id  (pivot)
+task_invitations    — id, task_id, requester_id, status (pending|accepted|declined), read
+```
+
+---
+
+
+## 📄 License
+
+This project is open-sourced under the [MIT License](LICENSE).
+
+---
