@@ -1,7 +1,3 @@
-/**
- * Badge component — mirrors the badge classes from the old tasks.css
- * Usage: <Badge variant="completed" /> <Badge variant="high" /> <Badge variant="vital" />
- */
 const VARIANTS = {
     // Status
     completed:   'bg-completed-bg text-completed-text',
@@ -34,8 +30,8 @@ export default function Badge({ variant, label, className = '', children }) {
         || (variant === 'vital' ? 'Vital' : variant);
 
     return (
-        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full
-                          text-[11px] font-semibold whitespace-nowrap ${classes} ${className}`}>
+        <span className={`inline-flex items-center gap-1 px-2! py-0! rounded-full
+                          text-[10px] font-semibold whitespace-nowrap ${classes} ${className}`}>
             {children || text}
         </span>
     );

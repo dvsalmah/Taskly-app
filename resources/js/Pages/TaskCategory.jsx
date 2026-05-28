@@ -44,7 +44,7 @@ function AddCategoryForm({ onClose }) {
             <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold text-ink">New Category</h2>
                 <button type="button" onClick={onClose}
-                        className="text-muted hover:text-ink text-[22px] leading-none border-none bg-transparent cursor-pointer px-1.5 rounded transition-colors">✕</button>
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
             </div>
 
             <div className="flex flex-col gap-1">

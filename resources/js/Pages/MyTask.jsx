@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Badge from '@/Components/Badge';
 import Modal from '@/Components/Modal';
 import DeleteConfirmOverlay from '@/Components/DeleteConfirmOverlay';
+import JoinTaskModal from '@/Components/JoinTaskModal';
 
 function deadlineLabel(dl) {
     if (!dl) return '';
@@ -55,20 +56,29 @@ function TaskCard({ task, onClick }) {
 
     return (
         <div onClick={onClick}
-            className={`!bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-b-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
+            className={`relative !bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-b-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
 
-            <div className="flex gap-1.5 flex-wrap items-center">
+            <div className="absolute top-4 right-4 flex gap-1 flex-wrap justify-end items-center max-w-[55%]">
                 {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="vital" className="w-3 h-3" /> Vital</Badge>}
                 <Badge variant={task.priority} />
             </div>
-
-            <div className="flex flex-col gap-1">
-                <h4 className={`text-[15px] font-bold text-ink leading-snug line-clamp-2 m-0 
-                    ${task.status?.toLowerCase() === 'completed' ? 'line-through opacity-50' : ''}`}>
-                    {task.title}
-                </h4>
+            <div className="flex flex-col gap-1 pr-[60%] sm:pr-[50%]">
+                <div className="flex items-center gap-1.5">
+                    <h4 className={`text-[15px] font-bold text-ink leading-snug line-clamp-2 m-0
+                        ${task.status?.toLowerCase() === 'completed' ? 'line-through opacity-50' : ''}`}>
+                        {task.title}
+                    </h4>
+                    {task.is_collab && (
+                        <img
+                            src="/assets/group.svg"
+                            alt="collab"
+                            title="Collab task"
+                            className="w-4 h-4 shrink-0 opacity-50"
+                        />
+                    )}
+                </div>
                 {task.description && (
-                    <p className="text-[13px] text-muted line-clamp-2 leading-relaxed m-0">{task.description}</p>
+                    <p className="text-[13px] text-muted line-clamp-1 leading-relaxed">{task.description}</p>
                 )}
             </div>
 
@@ -84,7 +94,7 @@ function TaskCard({ task, onClick }) {
 
             <div className="flex items-center justify-between mt-auto pt-1">
                 {task.deadline ? (
-                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1.5 
+                    <span className={`text-[10px] font-bold px-1.5! py-0.5! rounded-md flex items-center gap-1.5 
                         ${dlLabel.includes('Overdue') ? 'bg-[#FFEBEE] text-[#C62828]' : 'bg-[#fff0e6] text-[#FF6F00]'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         {dlLabel}
@@ -100,22 +110,40 @@ function TaskCard({ task, onClick }) {
 
 /* Add/Edit Form */
 function TaskForm({ task, categories, onClose, mode = 'add' }) {
-    const { data, setData, post, patch, processing, errors, reset } = useForm({
-        title: task?.title ?? '',
-        description: task?.description ?? '',
-        category_id: task?.category_id ?? '',
-        priority: task?.priority ?? 'medium',
-        status: task?.status ?? 'not_started',
-        deadline: task?.deadline ? task.deadline.replace(' ', 'T').slice(0, 16) : '',
-    });
+    const { data, setData, processing, errors } = {
+        data: {
+            title: task?.title ?? '',
+            description: task?.description ?? '',
+            category_id: task?.category_id ?? '',
+            priority: task?.priority ?? 'medium',
+            status: task?.status ?? 'not_started',
+            deadline: task?.deadline ? task.deadline.replace(' ', 'T').slice(0, 16) : '',
+        },
+        setData: () => {},
+        processing: false,
+        errors: {},
+    };
+
+    const [formData, setFormData] = useState(data);
+    const [formProcessing, setFormProcessing] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
+
+    const set = (key, val) => setFormData(prev => ({ ...prev, [key]: val }));
 
     const submit = (e) => {
         e.preventDefault();
-        const payload = { ...data, deadline: data.deadline || null, category_id: data.category_id || null };
+        const payload = { ...formData, deadline: formData.deadline || null, category_id: formData.category_id || null };
+        setFormProcessing(true);
         if (mode === 'add') {
-            router.post('/my-task', payload, { onSuccess: onClose });
+            router.post('/my-task', payload, {
+                onSuccess: onClose,
+                onError: (errs) => { setFormErrors(errs); setFormProcessing(false); },
+            });
         } else {
-            router.patch(`/my-task/${task.id}`, payload, { onSuccess: onClose });
+            router.patch(`/my-task/${task.id}`, payload, {
+                onSuccess: onClose,
+                onError: (errs) => { setFormErrors(errs); setFormProcessing(false); },
+            });
         }
     };
 
@@ -127,26 +155,26 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
             <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold">{mode === 'add' ? 'Add New Task' : 'Edit Task'}</h2>
                 <button type="button" onClick={onClose}
-                    className="text-muted hover:text-ink text-[22px] leading-none border-none bg-transparent cursor-pointer px-1.5 rounded transition-colors">✕</button>
+                    className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
             </div>
 
             <div className="flex flex-col gap-1">
-                <label className={labelCls}>Task Title *</label>
-                <input type="text" className={inputCls} placeholder="Enter task title…"
-                    value={data.title} onChange={e => setData('title', e.target.value)} required />
-                {errors.title && <p className="text-[12px] text-error-text mt-1">{errors.title}</p>}
+                <label className={labelCls}>Task Title</label>
+                <input type="text" className={inputCls} placeholder="Enter task title"
+                    value={formData.title} onChange={e => set('title', e.target.value)} required />
+                {formErrors.title && <p className="text-[12px] text-error-text mt-1">{formErrors.title}</p>}
             </div>
 
             <div className="flex flex-col gap-1">
                 <label className={labelCls}>Description</label>
-                <textarea className={`${inputCls} resize-y min-h-[80px]`} placeholder="Optional description…"
-                    value={data.description} onChange={e => setData('description', e.target.value)} />
+                <textarea className={`${inputCls} resize-y min-h-[80px]`} placeholder="Task description"
+                    value={formData.description} onChange={e => set('description', e.target.value)} />
             </div>
 
             <div className="grid grid-cols-2 gap-3.5">
                 <div>
                     <label className={labelCls}>Priority</label>
-                    <select className={inputCls} value={data.priority} onChange={e => setData('priority', e.target.value)}>
+                    <select className={inputCls} value={formData.priority} onChange={e => set('priority', e.target.value)}>
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
@@ -154,7 +182,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
                 </div>
                 <div>
                     <label className={labelCls}>Status</label>
-                    <select className={inputCls} value={data.status} onChange={e => setData('status', e.target.value)}>
+                    <select className={inputCls} value={formData.status} onChange={e => set('status', e.target.value)}>
                         <option value="not_started">Not Started</option>
                         <option value="in_progress">In Progress</option>
                         <option value="completed">Completed</option>
@@ -164,7 +192,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
 
             <div className="flex flex-col gap-1">
                 <label className={labelCls}>Category</label>
-                <select className={inputCls} value={data.category_id ?? ''} onChange={e => setData('category_id', e.target.value)}>
+                <select className={inputCls} value={formData.category_id ?? ''} onChange={e => set('category_id', e.target.value)}>
                     <option value="">— No category —</option>
                     {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
@@ -173,7 +201,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
             <div className="flex flex-col gap-1">
                 <label className={labelCls}>Deadline (optional)</label>
                 <input type="datetime-local" className={inputCls}
-                    value={data.deadline} onChange={e => setData('deadline', e.target.value)}
+                    value={formData.deadline} onChange={e => set('deadline', e.target.value)}
                     min={new Date().toISOString().slice(0, 16)} />
             </div>
 
@@ -184,18 +212,19 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
                                hover:bg-border transition-all cursor-pointer">
                     Cancel
                 </button>
-                <button type="submit" disabled={processing}
+                <button type="submit" disabled={formProcessing}
                     className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80 disabled:opacity-70">
-                    {processing ? 'Saving…' : (mode === 'add' ? 'Add Task' : 'Save Changes')}
+                    {formProcessing ? 'Saving…' : (mode === 'add' ? 'Add Task' : 'Save Changes')}
                 </button>
             </div>
         </form>
     );
 }
 
-/* Preview Modal */
 function PreviewModal({ task, categories, onClose, onEdit }) {
     const [dlLabel, setDlLabel] = useState(() => deadlineLabel(task?.deadline));
+    const [copied, setCopied] = useState(false);
+
     useEffect(() => {
         if (!task?.deadline) return;
         const id = setInterval(() => setDlLabel(deadlineLabel(task.deadline)), 60000);
@@ -206,6 +235,14 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
 
     const handleStatusChange = (e) => {
         router.patch(`/my-task/${task.id}/status`, { status: e.target.value }, { preserveScroll: true });
+    };
+
+    const handleCopyCode = () => {
+        if (!task.referral_code) return;
+        navigator.clipboard.writeText(task.referral_code).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
     };
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -220,15 +257,21 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
         <div className='flex flex-col !p-6 gap-3'>
             <div className="flex items-start justify-between gap-3 ">
                 <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-[17px] font-bold text-ink">{task.title}</h2>
                     {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="" className="w-3 h-3" /> Vital</Badge>}
                     <Badge variant={task.priority} />
-                    <h2 className="text-[17px] font-bold text-ink">{task.title}</h2>
+                    {task.is_collab && (
+                        <span className="inline-flex items-center gap-1 !px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pink-dark/10 text-pink-dark border border-pink-dark/20">
+                            <img src="/assets/group.svg" alt="" className="w-3 h-3" style={{ filter: 'invert(16%) sepia(73%) saturate(1500%) hue-rotate(305deg) brightness(60%)' }} />
+                            {task.is_author ? 'Collab' : 'Shared with me'}
+                        </span>
+                    )}
                 </div>
-                <button onClick={onClose} className="text-muted hover:text-ink text-[22px] leading-none border-none bg-transparent cursor-pointer px-1.5 rounded transition-colors">✕</button>
+                <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
             </div>
 
             {task.description && (
-                <div className="text-[14px] text-muted leading-relaxed bg-fore rounded-lg px-3.5 py-3 mb-4">{task.description}</div>
+                <div className="text-[14px] text-muted leading-relaxed bg-fore rounded-lg !p-3">{task.description}</div>
             )}
 
             <div className="grid grid-cols-2 gap-3 mb-1">
@@ -237,8 +280,8 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                 {task.category && (
                     <div className="flex flex-col gap-1">
                         <span className={labelCls}>Category</span>
-                        <span className="text-[12px] font-medium" style={{ color: task.category.color }}>
-                            ● {task.category.name}
+                        <span className="text-sm font-medium" style={{ color: task.category.color }}>
+                            {task.category.name}
                         </span>
                     </div>
                 )}
@@ -251,6 +294,36 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                 )}
             </div>
 
+            {task.is_author && task.referral_code && (
+                <div className="bg-fore rounded-lg !p-2 flex items-center justify-between gap-3 border border-border">
+                    <div className="flex flex-col gap-0.5">
+                        <span className={labelCls}>Invite Code</span>
+                        <span className="text-[18px] font-bold tracking-[0.3em] text-pink-dark">{task.referral_code}</span>
+                    </div>
+                    <button
+                        onClick={handleCopyCode}
+                        title="Copy code"
+                        className={`flex items-center gap-1.5 !p-2 rounded-lg text-[12px] font-semibold border transition-all cursor-pointer
+                            ${copied
+                                ? 'bg-ok-bg border-ok-border text-ok-text'
+                                : 'bg-surface border-border text-ink hover:border-pink-dark hover:text-pink-dark'
+                            }`}
+                    >
+                        {copied ? (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                Copied!
+                            </>
+                        ) : (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Copy
+                            </>
+                        )}
+                    </button>
+                </div>
+            )}
+
             <div className="mt-4 flex items-center gap-2.5 flex-wrap">
                 <label className="text-[13px] font-semibold text-muted">Update Status:</label>
                 <select defaultValue={task.status} onChange={handleStatusChange}
@@ -261,18 +334,21 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                 </select>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 mt-5 pt-4">
-                <button onClick={onEdit}
-                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
+            {/* Action buttons */}
+            {task.is_author && (
+                <div className="flex items-center justify-end gap-2.5 mt-5 pt-4">
+                    <button onClick={onEdit}
+                        className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
                                            border border-gray-200 text-ink bg-fore
                                            hover:bg-border  transition-all cursor-pointer">
-                    <img src="/assets/edit.svg" alt="" className="w-4 h-4" /> Edit
-                </button>
-                <button onClick={() => setShowDeleteConfirm(true)}
-                    className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80">
-                    <img src="/assets/trash.svg" alt="" className="w-4 h-4" /> Delete
-                </button>
-            </div>
+                        <img src="/assets/edit.svg" alt="" className="w-4 h-4" /> Edit
+                    </button>
+                    <button onClick={() => setShowDeleteConfirm(true)}
+                        className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80">
+                        <img src="/assets/trash.svg" alt="" className="w-4 h-4 invert" /> Delete
+                    </button>
+                </div>
+            )}
 
             {showDeleteConfirm && (
                 <DeleteConfirmOverlay
@@ -293,6 +369,7 @@ export default function MyTask({ tasks, categories }) {
     const params = new URLSearchParams(url.split('?')[1]);
     const [searchQuery, setSearchQuery] = useState(params.get('search') || '');
     const [addOpen, setAddOpen] = useState(false);
+    const [joinOpen, setJoinOpen] = useState(false);
     const [previewTask, setPreviewTask] = useState(null);
     const [editTask, setEditTask] = useState(null);
 
@@ -325,12 +402,27 @@ export default function MyTask({ tasks, categories }) {
                     <h1 className="text-[22px] font-bold text-ink m-0">My Task</h1>
                     <p className="text-[13px] text-muted mt-1 m-0">{tasks.length} task{tasks.length !== 1 ? 's' : ''} total</p>
                 </div>
-                <button onClick={() => setAddOpen(true)}
-                    className="inline-flex items-center justify-center gap-1.5 !px-3 !py-2.5 rounded-lg text-sm font-semibold
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <button
+                        onClick={() => setJoinOpen(true)}
+                        className="inline-flex items-center justify-center gap-1.5 !px-3 !py-2.5 rounded-lg text-sm font-semibold
+                                   bg-fore border border-pink-dark text-pink-dark
+                                   hover:bg-pink-dark/10 transition-all flex-1 sm:flex-none cursor-pointer"
+                    >
+                        <img src="/assets/group.svg" alt="" className="w-4 h-4" style={{ filter: 'invert(16%) sepia(73%) saturate(1500%) hue-rotate(305deg) brightness(60%)' }} />
+                        Join Task
+                    </button>
+
+                    {/* Add Task button */}
+                    <button
+                        onClick={() => setAddOpen(true)}
+                        className="inline-flex items-center justify-center gap-1.5 !px-3 !py-2.5 rounded-lg text-sm font-semibold
                                    bg-pink-dark text-white transition-all
-                                   hover:bg-pink-dark/80  w-full sm:w-auto cursor-pointer border-none">
-                    <img src="/assets/add.svg" alt="" className="w-4 h-4 invert" /> Add Task
-                </button>
+                                   hover:bg-pink-dark/80 flex-1 sm:flex-none cursor-pointer border-none"
+                    >
+                        <img src="/assets/add.svg" alt="" className="w-4 h-4 invert" /> Add Task
+                    </button>
+                </div>
             </div>
 
             {/* Filter bar */}
@@ -362,12 +454,13 @@ export default function MyTask({ tasks, categories }) {
                 ))}
             </div>
 
-            {/* Add Modal */}
             <Modal open={addOpen} onClose={() => setAddOpen(false)}>
                 <TaskForm mode="add" categories={categories} onClose={() => setAddOpen(false)} />
             </Modal>
 
-            {/* Edit Modal */}
+            <Modal open={joinOpen} onClose={() => setJoinOpen(false)} maxWidth="max-w-[420px]">
+                <JoinTaskModal onClose={() => setJoinOpen(false)} />
+            </Modal>
             <Modal open={!!editTask} onClose={() => setEditTask(null)}>
                 {editTask && (
                     <TaskForm mode="edit" task={editTask} categories={categories} onClose={() => setEditTask(null)} />

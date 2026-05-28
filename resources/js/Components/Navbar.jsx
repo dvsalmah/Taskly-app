@@ -63,17 +63,108 @@ function MiniCalendar() {
     );
 }
 
+function timeAgoShort(iso) {
+    if (!iso) return '';
+    const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function NotifPopover({ invitations, onRespond, onClose }) {
+    return (
+        <div className="absolute right-0 top-[calc(100%+10px)] w-95 bg-surface rounded-[14px]
+                        shadow-modal border border-border z-[500] animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between !px-5 border-b border-border">
+                <div>
+                    <span className="text-sm font-bold text-ink">Notifications</span>
+                    {invitations.length > 0 && (
+                        <span className="ml-2 text-xs font-semibold bg-pink-dark text-white rounded-full px-1.5 py-0.5">
+                            {invitations.length}
+                        </span>
+                    )}
+                </div>
+                <button
+                    onClick={onClose}
+                    className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore
+                               text-[16px] leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"
+                ><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+            </div>
+
+            {/* List */}
+            <div className="max-h-[400px] overflow-y-auto divide-y divide-border">
+                {invitations.length === 0 ? (
+                    <div className="flex flex-col items-center gap-3 !py-4 text-muted px-6">
+                        <div className="w-10 h-10 rounded-2xl bg-fore flex items-center justify-center">
+                            <img src="/assets/notif.svg" alt="" className="w-5 h-5 opacity-40" />
+                        </div>
+                        <div className="text-center">
+                            <p className="text-sm font-semibold text-ink m-0">All caught up!</p>
+                            <p className="text-xs text-muted m-0 mt-1">No pending join requests right now.</p>
+                        </div>
+                    </div>
+                ) : (
+                    invitations.map(inv => (
+                        <div key={inv.id} className="flex flex-col gap-3 px-5 py-4 hover:bg-fore/60 transition-colors">
+                            {/* Requester info */}
+                            <div className="flex items-start gap-3">
+                                <img
+                                    src={inv.requester_photo}
+                                    alt=""
+                                    onError={(e) => { e.target.src = '/assets/avatar.png'; }}
+                                    className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-border"
+                                />
+                                <div className="flex-1 min-w-0 pt-0.5">
+                                    <p className="text-[13px] text-ink m-0 leading-relaxed">
+                                        <span className="font-bold">{inv.requester_name}</span>
+                                        <span className="text-muted"> wants to join </span>
+                                        <span className="font-semibold text-pink-dark">"{inv.task_title}"</span>
+                                    </p>
+                                    <span className="text-[11px] text-muted mt-1 block">{timeAgoShort(inv.created_at)}</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2.5 pl-[52px]">
+                                <button
+                                    onClick={() => onRespond(inv.id, 'accept')}
+                                    className="flex-1 h-8 bg-pink-dark text-white rounded-lg text-[12px] font-semibold
+                                               cursor-pointer border-none transition-all hover:bg-pink-dark/80"
+                                >
+                                    Accept
+                                </button>
+                                <button
+                                    onClick={() => onRespond(inv.id, 'decline')}
+                                    className="flex-1 h-8 bg-fore border border-border text-ink rounded-lg text-[12px] font-semibold
+                                               cursor-pointer transition-all hover:bg-border"
+                                >
+                                    Decline
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+}
+
 export default function Navbar({ user }) {
     const { toggleSidebar } = useSidebar();
     const { url } = usePage();
     const params = new URLSearchParams(url.split('?')[1]);
     const [calOpen, setCalOpen] = useState(false);
+    const [notifOpen, setNotifOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState(params.get('search') || '');
+    const [invitations, setInvitations] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
     const calRef = useRef(null);
+    const notifRef = useRef(null);
 
     useEffect(() => {
         const handler = (e) => {
             if (calRef.current && !calRef.current.contains(e.target)) setCalOpen(false);
+            if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
         };
         document.addEventListener('click', handler);
         return () => document.removeEventListener('click', handler);
@@ -83,6 +174,42 @@ export default function Navbar({ user }) {
         window.dispatchEvent(new CustomEvent('taskly:search', { detail: searchQuery }));
     }, [searchQuery]);
 
+    useEffect(() => {
+        const fetchUnread = () => {
+            fetch('/collab/unread', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => { if (data) setUnreadCount(data.unread); })
+                .catch(() => {});
+        };
+        fetchUnread();
+        const id = setInterval(fetchUnread, 15000);
+        return () => clearInterval(id);
+    }, []);
+
+    const handleNotifOpen = (e) => {
+        e.stopPropagation();
+        if (notifOpen) { setNotifOpen(false); return; }
+        setCalOpen(false);
+        fetch('/collab/notifications', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data) {
+                    setInvitations(data.invitations);
+                    setUnreadCount(0); // reset after fetch
+                }
+            })
+            .catch(() => {});
+        setNotifOpen(true);
+    };
+
+    const handleRespond = (invitationId, action) => {
+        router.post(`/collab/respond/${invitationId}`, { action }, {
+            onSuccess: () => {
+                setInvitations(prev => prev.filter(i => i.id !== invitationId));
+            },
+        });
+    };
+
     const photoUrl = user?.photo_url || 'https://i.pravatar.cc/150?img=8';
     const todayStr = new Date().toLocaleDateString('en-GB', {
         weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
@@ -91,8 +218,7 @@ export default function Navbar({ user }) {
     return (
         <header className="bg-surface h-[72px] w-full flex items-center justify-between !px-4 sm:px-6 lg:px-8 sticky top-0 z-30 shadow-sm">
             <div className="flex items-center gap-4">
-                {/* Mobile Menu Toggle */}
-                <button 
+                <button
                     onClick={toggleSidebar}
                     className="lg:hidden p-2 -ml-2 rounded-lg text-muted hover:bg-fore transition-colors"
                 >
@@ -143,10 +269,32 @@ export default function Navbar({ user }) {
 
             {/* Right side */}
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                <div className="relative flex items-center" ref={notifRef}>
+                    <button
+                        onClick={handleNotifOpen}
+                        className="relative w-10 h-10 flex items-center justify-center rounded-xl
+                                   bg-transparent border-none cursor-pointer hover:bg-fore transition-colors"
+                        title="Notifications"
+                    >
+                        <img src="/assets/notif.svg" alt="Notification" className="w-5 h-5 object-contain opacity-80" />
+                        {unreadCount > 0 && (
+                            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ef4444] shadow-sm ring-2 ring-surface" />
+                        )}
+                    </button>
+
+                    {notifOpen && (
+                        <NotifPopover
+                            invitations={invitations}
+                            onRespond={handleRespond}
+                            onClose={() => setNotifOpen(false)}
+                        />
+                    )}
+                </div>
+
                 <div className="relative flex items-center" ref={calRef}>
                     <button
                         title={todayStr}
-                        onClick={(e) => { e.stopPropagation(); setCalOpen(o => !o); }}
+                        onClick={(e) => { e.stopPropagation(); setCalOpen(o => !o); setNotifOpen(false); }}
                         className="w-10 h-10 flex items-center justify-center rounded-xl
                                    bg-transparent border-none cursor-pointer hover:bg-fore transition-colors"
                     >
