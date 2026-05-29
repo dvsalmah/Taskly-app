@@ -34,13 +34,7 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->fill($request->validated());
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        // Handle photo upload
         if ($request->hasFile('photo')) {
-            // Delete old photo from storage (if local)
             if ($user->photo && !str_starts_with($user->photo, 'http')) {
                 Storage::disk('public')->delete($user->photo);
             }

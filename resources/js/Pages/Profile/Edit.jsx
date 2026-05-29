@@ -131,19 +131,41 @@ export default function ProfileEdit({ user }) {
     const [toast, setToast] = useState(null);
     const fileRef = useRef();
 
+    const cropToSquare = (file) =>
+        new Promise((resolve) => {
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                const size = Math.min(img.width, img.height);
+                const sx   = (img.width  - size) / 2;
+                const sy   = (img.height - size) / 2;
+                const canvas = document.createElement('canvas');
+                canvas.width  = size;
+                canvas.height = size;
+                canvas.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, size, size);
+                canvas.toBlob(
+                    (blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })),
+                    'image/jpeg', 0.92
+                );
+            };
+            img.src = url;
+        });
+
     const field = (key) => ({
         value: form[key],
         onChange: (e) => setForm(f => ({ ...f, [key]: e.target.value })),
         className: inputCls,
     });
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        setPhotoFile(file);
+        const cropped = await cropToSquare(file);
+        setPhotoFile(cropped);
         const reader = new FileReader();
         reader.onload = (ev) => setPhotoPreview(ev.target.result);
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(cropped);
     };
 
     const cancelPreview = () => {
