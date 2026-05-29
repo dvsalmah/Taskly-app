@@ -74,14 +74,14 @@ function timeAgoShort(iso) {
 
 function NotifPopover({ invitations, onRespond, onClose }) {
     return (
-        <div className="absolute right-0 top-[calc(100%+10px)] w-95 bg-surface rounded-[14px]
+        <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] sm:w-[400px] bg-surface rounded-lg
                         shadow-modal border border-border z-[500] animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between !px-5 border-b border-border">
-                <div>
-                    <span className="text-sm font-bold text-ink">Notifications</span>
+            <div className="flex items-center justify-between !px-4 !py-1  border-b border-border bg-surface/95 backdrop-blur-sm sticky top-0 z-10">
+                <div className="flex items-center gap-4">
+                    <span className="text-[15px] font-bold text-ink">Notifications</span>
                     {invitations.length > 0 && (
-                        <span className="ml-2 text-xs font-semibold bg-pink-dark text-white rounded-full px-1.5 py-0.5">
+                        <span className="text-[11px] font-bold bg-pink-dark text-white rounded-full !px-2 !py-0.5">
                             {invitations.length}
                         </span>
                     )}
@@ -94,20 +94,20 @@ function NotifPopover({ invitations, onRespond, onClose }) {
             </div>
 
             {/* List */}
-            <div className="max-h-[400px] overflow-y-auto divide-y divide-border">
+            <div className="max-h-[380px] overflow-y-auto !p-4 flex flex-col gap-3">
                 {invitations.length === 0 ? (
-                    <div className="flex flex-col items-center gap-3 !py-4 text-muted px-6">
-                        <div className="w-10 h-10 rounded-2xl bg-fore flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-3 py-6 px-4 text-center">
+                        <div className="w-10 h-10 rounded-2xl bg-fore flex items-center justify-center shadow-sm">
                             <img src="/assets/notif.svg" alt="" className="w-5 h-5 opacity-40" />
                         </div>
-                        <div className="text-center">
-                            <p className="text-sm font-semibold text-ink m-0">All caught up!</p>
+                        <div>
+                            <p className="text-sm font-bold text-ink m-0">All caught up!</p>
                             <p className="text-xs text-muted m-0 mt-1">No pending join requests right now.</p>
                         </div>
                     </div>
                 ) : (
                     invitations.map(inv => (
-                        <div key={inv.id} className="flex flex-col gap-3 px-5 py-4 hover:bg-fore/60 transition-colors">
+                        <div key={inv.id} className="flex flex-col gap-3 !px-4 !py-2 bg-surface-alt/40 border border-border/60 rounded-xl hover:bg-surface-alt/70 transition-colors">
                             {/* Requester info */}
                             <div className="flex items-start gap-3">
                                 <img
@@ -117,7 +117,7 @@ function NotifPopover({ invitations, onRespond, onClose }) {
                                     className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-border"
                                 />
                                 <div className="flex-1 min-w-0 pt-0.5">
-                                    <p className="text-[13px] text-ink m-0 leading-relaxed">
+                                    <p className="text-sm text-ink m-0 leading-relaxed">
                                         <span className="font-bold">{inv.requester_name}</span>
                                         <span className="text-muted"> wants to join </span>
                                         <span className="font-semibold text-pink-dark">"{inv.task_title}"</span>
@@ -125,18 +125,19 @@ function NotifPopover({ invitations, onRespond, onClose }) {
                                     <span className="text-[11px] text-muted mt-1 block">{timeAgoShort(inv.created_at)}</span>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2.5 pl-[52px]">
+                            {/* Buttons */}
+                            <div className="flex items-center gap-2.5">
                                 <button
                                     onClick={() => onRespond(inv.id, 'accept')}
                                     className="flex-1 h-8 bg-pink-dark text-white rounded-lg text-[12px] font-semibold
-                                               cursor-pointer border-none transition-all hover:bg-pink-dark/80"
+                                               cursor-pointer border-none transition-all hover:bg-pink-dark/85 active:scale-[0.98]"
                                 >
                                     Accept
                                 </button>
                                 <button
                                     onClick={() => onRespond(inv.id, 'decline')}
-                                    className="flex-1 h-8 bg-fore border border-border text-ink rounded-lg text-[12px] font-semibold
-                                               cursor-pointer transition-all hover:bg-border"
+                                    className="flex-1 h-8 bg-surface border border-border text-ink rounded-lg text-[12px] font-semibold
+                                               cursor-pointer transition-all hover:bg-fore active:scale-[0.98]"
                                 >
                                     Decline
                                 </button>
