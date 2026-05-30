@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
 import DeleteConfirmOverlay from '@/Components/DeleteConfirmOverlay';
+import { Trash2, X, Plus } from 'lucide-react';
 
 const PRESETS = ['#EC003F','#FF6F00','#F9A825','#2E7D32','#1565C0','#6A1B9A','#00838F','#4E342E','#546E7A'];
 
@@ -18,8 +19,8 @@ function CategoryCard({ cat, onDelete }) {
             </div>
             <button onClick={() => onDelete(cat)}
                     className="flex flex-col items-center justify-center bg-red-500 h-8 w-8 rounded-lg cursor-pointer text-muted
-                               hover:red-500 transition-colors p-1" title="Delete category">
-                <img src="/assets/trash.svg" alt="delete" className="w-4 h-4" />
+                hover:red-500 transition-colors p-1" title="Delete category">
+                <Trash2 size={16} />
             </button>
         </div>
     );
@@ -44,7 +45,7 @@ function AddCategoryForm({ onClose }) {
             <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold text-ink">New Category</h2>
                 <button type="button" onClick={onClose}
-                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><X size={20} className="opacity-80" /></button>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -112,7 +113,7 @@ export default function TaskCategory({ categories }) {
                     className="inline-flex items-center justify-center gap-1.5 !px-3 !py-2.5 rounded-lg text-sm font-semibold
                                    bg-pink-dark text-white transition-all
                                    hover:bg-pink-dark/80  w-full sm:w-auto cursor-pointer border-none">
-                    <img src="/assets/add.svg" alt="" className="w-4 h-4 invert" /> Add Category
+                    <Plus size={16} /> Add Category
                 </button>
             </div>
 

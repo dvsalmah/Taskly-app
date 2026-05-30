@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Badge from '@/Components/Badge'; // Pastikan path ini benar di komputermu!
+import { Flame, UsersRound } from 'lucide-react';
 
 function timeAgoJS(datetimeStr) {
     if (!datetimeStr) return '';
@@ -54,15 +55,10 @@ function TaskItem({ task }) {
     return (
         <div className={`rounded-2xl border-l-4 bg-fore/70 !px-4 !py-3 !mb-3 ${finalBorderClass}`}>
             <h4 className="text-[13px] font-semibold text-ink flex items-center gap-1.5 mb-1 line-clamp-1">
-                {task.is_vital && <img src="/assets/fire.svg" alt="vital" className="w-4 h-4" />}
+                {task.is_vital && <Flame size={16} className="text-[#FF6F00]" />}
                 {task.title}
                 {task.is_collab && (
-                    <img
-                        src="/assets/group.svg"
-                        alt="collab"
-                        title="Collab task"
-                        className="w-3.5 h-3.5 shrink-0 opacity-50 ml-0.5"
-                    />
+                    <UsersRound size={14} className="shrink-0 opacity-50 ml-0.5" title="Collab task" />
                 )}
             </h4>
             {task.description && (

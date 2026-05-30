@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Trash2 } from 'lucide-react';
 
 export default function DeleteConfirmOverlay({ onCancel, onConfirm, itemName, isCategory = false }) {
     const [mounted, setMounted] = useState(false);
@@ -23,7 +24,7 @@ export default function DeleteConfirmOverlay({ onCancel, onConfirm, itemName, is
             >
                 {/* Icon */}
                 <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[#FFEBEE]">
-                    <img src="/assets/trash.svg" alt="delete" className="w-6 h-6" style={{ filter: 'invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' }} />
+                    <Trash2 size={24} className="text-[#C62828]" />
                 </div>
 
                 {/* Text */}

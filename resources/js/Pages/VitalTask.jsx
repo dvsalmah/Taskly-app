@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Badge from '@/Components/Badge';
+import { UsersRound, MoveLeft, Search, Calendar } from 'lucide-react';
 
 function deadlineLabel(dl) {
     if (!dl) return '';
@@ -47,12 +48,7 @@ function VitalCard({ task }) {
                 <div className="flex items-center gap-1.5">
                     <h4 className="text-[15px] font-bold text-ink truncate m-0">{task.title}</h4>
                     {task.is_collab && (
-                        <img
-                            src="/assets/group.svg"
-                            alt="collab"
-                            title="Collab task"
-                            className="w-4 h-4 shrink-0 opacity-50"
-                        />
+                        <UsersRound size={16} className="shrink-0 opacity-50" title="Collab task" />
                     )}
                 </div>
                 
@@ -76,7 +72,7 @@ function VitalCard({ task }) {
                 {task.deadline && (
                     <div className="flex items-center gap-2 mt-1.5">
                         <span className="text-[11px] font-bold bg-[#fff0e6] text-[#FF6F00] px-2 py-0.5 rounded flex items-center gap-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <Calendar size={12} strokeWidth={2} className="shrink-0" />
                             {dlLabel}
                         </span>
                         <span className="text-[11px] text-muted font-medium">
@@ -124,7 +120,7 @@ export default function VitalTask({ vitalTasks }) {
                 <Link href="/my-task"
                       className="inline-flex items-center gap-1.5 !px-4.5 !py-1.5 rounded-lg text-sm font-semibold
                                  text-muted hover:text-ink w-max group">
-                    <img src="/assets/left.svg" alt="" className="w-4 h-4 opacity-50 group-hover:opacity-100" /> Back to My Task
+                    <MoveLeft size={16} className="opacity-50 group-hover:opacity-100" /> Back to My Task
                 </Link>
             </div>
 
@@ -157,7 +153,7 @@ export default function VitalTask({ vitalTasks }) {
                 )}
                 {vitalTasks.length > 0 && filtered.length === 0 && (
                     <div className="flex flex-col items-center justify-center text-center !py-16 gap-3 text-muted">
-                        <img src="/assets/seacrh.svg" alt="" className="w-8 h-8  mb-4 opacity-40" />
+                        <Search size={32} className="mb-4 opacity-40" />
                         <span className="text-md font-semibold text-ink mb-1.5 m-0">No tasks match this filter</span>
                     </div>
                 )}

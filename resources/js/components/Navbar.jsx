@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { useSidebar } from '@/components/ui/sidebar';
+import { X, BellRing, Calendar, Search, Menu } from 'lucide-react';
 
 const MONTHS = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -90,7 +91,7 @@ function NotifPopover({ invitations, onRespond, onClose }) {
                     onClick={onClose}
                     className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore
                                text-[16px] leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"
-                ><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+                ><X size={20} className="opacity-80" /></button>
             </div>
 
             {/* List */}
@@ -98,7 +99,7 @@ function NotifPopover({ invitations, onRespond, onClose }) {
                 {invitations.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 py-6 px-4 text-center">
                         <div className="w-10 h-10 rounded-2xl bg-fore flex items-center justify-center shadow-sm">
-                            <img src="/assets/notif.svg" alt="" className="w-5 h-5 opacity-40" />
+                            <BellRing size={20} className="opacity-40" />
                         </div>
                         <div>
                             <p className="text-sm font-bold text-ink m-0">All caught up!</p>
@@ -223,11 +224,7 @@ export default function Navbar({ user }) {
                     onClick={toggleSidebar}
                     className="lg:hidden p-2 -ml-2 rounded-lg text-muted hover:bg-fore transition-colors"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
+                    <Menu size={24} />
                 </button>
 
                 {/* Logo */}
@@ -247,11 +244,7 @@ export default function Navbar({ user }) {
                             rounded-lg bg-fore border border-transparent
                             focus-within:border-gray-200 overflow-hidden transition-colors"
                 >
-                    <img
-                        src="/assets/seacrh.svg"
-                        alt="Search"
-                        className="w-4 h-4 shrink-0 opacity-40 !ml-6"
-                    />
+                    <Search size={16} className="shrink-0 opacity-40 !ml-6" />
                     <input
                         type="text"
                         placeholder="Search your task here"
@@ -277,7 +270,7 @@ export default function Navbar({ user }) {
                                    bg-transparent border-none cursor-pointer hover:bg-fore transition-colors"
                         title="Notifications"
                     >
-                        <img src="/assets/notif.svg" alt="Notification" className="w-5 h-5 object-contain opacity-80" />
+                        <BellRing size={20} className="opacity-80" />
                         {unreadCount > 0 && (
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ef4444] shadow-sm ring-2 ring-surface" />
                         )}
@@ -299,7 +292,7 @@ export default function Navbar({ user }) {
                         className="w-10 h-10 flex items-center justify-center rounded-xl
                                    bg-transparent border-none cursor-pointer hover:bg-fore transition-colors"
                     >
-                        <img src="/assets/calendar.svg" alt="Calendar" className="w-5 h-5 object-contain opacity-80" />
+                        <Calendar size={20} className="opacity-80" />
                     </button>
                     {calOpen && (
                         <div className="absolute right-0 top-[calc(100%+10px)] w-[260px] bg-surface rounded-[14px]

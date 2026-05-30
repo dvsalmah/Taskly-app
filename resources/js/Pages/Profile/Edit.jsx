@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Camera, Loader2, Save, Trash2 } from 'lucide-react';
 
 /* ───────────── Toast notification ───────────── */
 function Toast({ type, msg, onClose }) {
@@ -66,12 +67,7 @@ function AvatarUploader({ previewUrl, currentUrl, onFileChange, onCancel, fileRe
                 {/* Hover overlay */}
                 <div className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     <div className="flex flex-col items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                            viewBox="0 0 24 24" fill="none" stroke="white"
-                            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                            <circle cx="12" cy="13" r="4" />
-                        </svg>
+                        <Camera size={22} className="text-white" />
                         <span className="text-[10px] font-bold text-white">Change</span>
                     </div>
                 </div>
@@ -382,22 +378,12 @@ export default function ProfileEdit({ user }) {
                                 >
                                     {busy ? (
                                         <>
-                                            <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg"
-                                                width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" strokeWidth="3">
-                                                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                                            </svg>
+                                            <Loader2 size={14} strokeWidth={3} className="animate-spin" />
                                             Saving…
                                         </>
                                     ) : (
                                         <>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                                <polyline points="17 21 17 13 7 13 7 21" />
-                                                <polyline points="7 3 7 8 15 8" />
-                                            </svg>
+                                            <Save size={14} strokeWidth={2.5} />
                                             Save Changes
                                         </>
                                     )}
@@ -421,13 +407,7 @@ export default function ProfileEdit({ user }) {
                     >
                         {/* Icon */}
                         <div className="w-12 h-12 rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
-                                viewBox="0 0 24 24" fill="none" stroke="var(--color-pink-dark)"
-                                strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M3 6h18" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                            </svg>
+                            <Trash2 size={28} strokeWidth={2.2} className="text-pink-dark" />
                         </div>
 
                         {/* Text */}

@@ -5,6 +5,7 @@ import Badge from '@/Components/Badge';
 import Modal from '@/Components/Modal';
 import DeleteConfirmOverlay from '@/Components/DeleteConfirmOverlay';
 import JoinTaskModal from '@/Components/JoinTaskModal';
+import { Flame, X, UsersRound, Edit2, Trash2, Plus, ClipboardCheck, Search, Calendar, Check, Copy } from 'lucide-react';
 
 function deadlineLabel(dl) {
     if (!dl) return '';
@@ -59,7 +60,7 @@ function TaskCard({ task, onClick }) {
             className={`relative !bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] !p-5 flex flex-col gap-2.5 cursor-pointer transition-all duration-200 border-b-4 hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 w-full ${finalBorderClass}`}>
 
             <div className="absolute top-4 right-4 flex gap-1 flex-wrap justify-end items-center max-w-[55%]">
-                {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="vital" className="w-3 h-3" /> Vital</Badge>}
+                {task.is_vital && <Badge variant="vital"><Flame size={12} /> Vital</Badge>}
                 <Badge variant={task.priority} />
             </div>
             <div className="flex flex-col gap-1 pr-[60%] sm:pr-[50%]">
@@ -69,12 +70,7 @@ function TaskCard({ task, onClick }) {
                         {task.title}
                     </h4>
                     {task.is_collab && (
-                        <img
-                            src="/assets/group.svg"
-                            alt="collab"
-                            title="Collab task"
-                            className="w-4 h-4 shrink-0 opacity-50"
-                        />
+                        <UsersRound size={16} className="shrink-0 opacity-50" title="Collab task" />
                     )}
                 </div>
                 {task.description && (
@@ -96,7 +92,7 @@ function TaskCard({ task, onClick }) {
                 {task.deadline ? (
                     <span className={`text-[10px] font-bold px-1.5! py-0.5! rounded-md flex items-center gap-1.5 
                         ${dlLabel.includes('Overdue') ? 'bg-[#FFEBEE] text-[#C62828]' : 'bg-[#fff0e6] text-[#FF6F00]'}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <Calendar size={12} strokeWidth={2} className="shrink-0" />
                         {dlLabel}
                     </span>
                 ) : <span></span>}
@@ -155,7 +151,7 @@ function TaskForm({ task, categories, onClose, mode = 'add' }) {
             <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[18px] font-bold">{mode === 'add' ? 'Add New Task' : 'Edit Task'}</h2>
                 <button type="button" onClick={onClose}
-                    className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+                    className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><X size={20} className="opacity-80" /></button>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -258,16 +254,16 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
             <div className="flex items-start justify-between gap-3 ">
                 <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="text-[17px] font-bold text-ink">{task.title}</h2>
-                    {task.is_vital && <Badge variant="vital"><img src="/assets/fire.svg" alt="" className="w-3 h-3" /> Vital</Badge>}
+                    {task.is_vital && <Badge variant="vital"><Flame size={12} /> Vital</Badge>}
                     <Badge variant={task.priority} />
                     {task.is_collab && (
                         <span className="inline-flex items-center gap-1 !px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pink-dark/10 text-pink-dark border border-pink-dark/20">
-                            <img src="/assets/group.svg" alt="" className="w-3 h-3" style={{ filter: 'invert(16%) sepia(73%) saturate(1500%) hue-rotate(305deg) brightness(60%)' }} />
+                            <UsersRound size={12} />
                             {task.is_author ? 'Collab' : 'Shared with me'}
                         </span>
                     )}
                 </div>
-                <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+                <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors"><X size={20} className="opacity-80" /></button>
             </div>
 
             {task.description && (
@@ -311,12 +307,12 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                     >
                         {copied ? (
                             <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                <Check size={12} strokeWidth={2.5} className="shrink-0" />
                                 Copied!
                             </>
                         ) : (
                             <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                <Copy size={12} strokeWidth={2} className="shrink-0" />
                                 Copy
                             </>
                         )}
@@ -341,11 +337,11 @@ function PreviewModal({ task, categories, onClose, onEdit }) {
                         className="flex flex-row justify-center items-center gap-2 h-8 w-30 rounded-lg text-sm font-semibold
                                            border border-gray-200 text-ink bg-fore
                                            hover:bg-border  transition-all cursor-pointer">
-                        <img src="/assets/edit.svg" alt="" className="w-4 h-4" /> Edit
+                        <Edit2 size={16} /> Edit
                     </button>
                     <button onClick={() => setShowDeleteConfirm(true)}
                         className="flex flex-row justify-center items-center gap-2 h-8 w-30 bg-pink-dark text-white rounded-xl text-sm font-semibold cursor-pointer transition-all hover:bg-pink-dark/80">
-                        <img src="/assets/trash.svg" alt="" className="w-4 h-4 invert" /> Delete
+                        <Trash2 size={16} /> Delete
                     </button>
                 </div>
             )}
@@ -409,8 +405,7 @@ export default function MyTask({ tasks, categories }) {
                                    bg-fore border border-pink-dark text-pink-dark
                                    hover:bg-pink-dark/10 transition-all flex-1 sm:flex-none cursor-pointer"
                     >
-                        <img src="/assets/group.svg" alt="" className="w-4 h-4" style={{ filter: 'invert(16%) sepia(73%) saturate(1500%) hue-rotate(305deg) brightness(60%)' }} />
-                        Join Task
+                        <UsersRound size={16} /> Join Task
                     </button>
 
                     {/* Add Task button */}
@@ -420,7 +415,7 @@ export default function MyTask({ tasks, categories }) {
                                    bg-pink-dark text-white transition-all
                                    hover:bg-pink-dark/80 flex-1 sm:flex-none cursor-pointer border-none"
                     >
-                        <img src="/assets/add.svg" alt="" className="w-4 h-4 invert" /> Add Task
+                        <Plus size={16} /> Add Task
                     </button>
                 </div>
             </div>
@@ -438,14 +433,14 @@ export default function MyTask({ tasks, categories }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredTasks.length === 0 && tasks.length === 0 && (
                     <div className="col-span-full flex flex-col items-center py-16 text-muted">
-                        <img src="/assets/clipboard.svg" alt="" className="w-8 h-8 mx-auto mb-4 opacity-40" />
+                        <ClipboardCheck size={32} className="mx-auto mb-4 opacity-40" />
                         <h3 className="text-[16px] font-semibold text-ink mb-1.5 m-0">No tasks yet</h3>
                         <p className="text-[13px] m-0">Click "Add Task" to create your first task.</p>
                     </div>
                 )}
                 {filteredTasks.length === 0 && tasks.length > 0 && (
                     <div className="col-span-full flex flex-col items-center justify-center text-center !py-16 gap-3 text-muted">
-                        <img src="/assets/seacrh.svg" alt="" className="w-8 h-8  mb-4 opacity-40" />
+                        <Search size={32} className="mb-4 opacity-40" />
                         <span className="text-md font-semibold text-ink mb-1.5 m-0">No tasks match this filter</span>
                     </div>
                 )}

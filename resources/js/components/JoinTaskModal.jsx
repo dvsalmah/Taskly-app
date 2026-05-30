@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { UsersRound, X, AlertCircle, Check } from 'lucide-react';
 
 /**
  * Modal for a user to join a collab task using a 6-character referral code.
@@ -51,18 +52,13 @@ export default function JoinTaskModal({ onClose }) {
                     type="button"
                     onClick={onClose}
                     className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink hover:bg-fore leading-none border-none bg-transparent cursor-pointer rounded-lg transition-colors shrink-0"
-                ><img src="/assets/x-mark.svg" alt="Close" className="w-5 h-5 object-contain opacity-80" /></button>
+                ><X size={20} className="opacity-80" /></button>
             </div>
 
             {/* Icon */}
             <div className="flex justify-center py-2">
                 <div className="w-16 h-16 rounded-2xl bg-pink-dark/10 border border-pink-dark/20 flex items-center justify-center shadow-sm">
-                    <img
-                        src="/assets/group.svg"
-                        alt=""
-                        className="w-8 h-8"
-                        style={{ filter: 'invert(16%) sepia(73%) saturate(1500%) hue-rotate(305deg) brightness(60%)' }}
-                    />
+                    <UsersRound size={32} className="text-pink-dark" />
                 </div>
             </div>
 
@@ -89,17 +85,13 @@ export default function JoinTaskModal({ onClose }) {
             {/* Feedback */}
             {error && (
                 <div className="flex items-center gap-2 bg-error-bg border border-error-border text-error-text text-[12px] font-medium rounded-lg !px-3 !py-2.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
+                    <AlertCircle size={14} strokeWidth={2.5} className="shrink-0" />
                     {error}
                 </div>
             )}
             {success && (
                 <div className="flex items-center gap-2 bg-ok-bg border border-ok-border text-ok-text text-[12px] font-medium rounded-lg !px-3 !py-2.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
+                    <Check size={14} strokeWidth={2.5} className="shrink-0" />
                     {success}
                 </div>
             )}

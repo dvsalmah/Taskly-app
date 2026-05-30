@@ -1,14 +1,15 @@
 import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { CheckSquare, Flame, FolderOpen, LayoutDashboard, User, Lock } from 'lucide-react';
 
 const HELP_CARDS = [
-    { icon: '/assets/my-task.svg', title: 'My Task', desc: 'Add, edit, and manage all your tasks in one place. Set a title, description, category, and status. Use the status dropdown on each card to quickly update progress.' },
-    { icon: '/assets/vital-task.svg', title: 'Vital Task', desc: 'Tasks with High priority and a deadline within 48 hours are automatically shown here. Keep an eye on them so nothing important slips through.' },
-    { icon: '/assets/category.svg', title: 'Task Categories', desc: 'Create custom categories (e.g. Work, Personal, Study) with your own colour. When adding a task, pick a category to keep things organised and visually distinct.' },
-    { icon: '/assets/homepage.svg', title: 'Dashboard', desc: 'The homepage shows your upcoming to-dos, real-time task status percentages, and recently completed tasks — all pulled live from your task data.' },
-    { icon: '/assets/profile.svg', title: 'Profile & Settings', desc: 'Update your name, email, contact, and position anytime. You can also upload a profile photo (JPG/PNG, max 2 MB) which will show in the navbar.' },
-    { icon: '/assets/password.svg', title: 'Security', desc: 'Change your password from the Profile page. Your session is protected — you\'ll be redirected to login if not authenticated. Logout from the sidebar at any time.' },
+    { Icon: CheckSquare, title: 'My Task', desc: 'Add, edit, and manage all your tasks in one place. Set a title, description, category, and status. Use the status dropdown on each card to quickly update progress.' },
+    { Icon: Flame, title: 'Vital Task', desc: 'Tasks with High priority and a deadline within 48 hours are automatically shown here. Keep an eye on them so nothing important slips through.' },
+    { Icon: FolderOpen, title: 'Task Categories', desc: 'Create custom categories (e.g. Work, Personal, Study) with your own colour. When adding a task, pick a category to keep things organised and visually distinct.' },
+    { Icon: LayoutDashboard, title: 'Dashboard', desc: 'The homepage shows your upcoming to-dos, real-time task status percentages, and recently completed tasks — all pulled live from your task data.' },
+    { Icon: User, title: 'Profile & Settings', desc: 'Update your name, email, contact, and position anytime. You can also upload a profile photo (JPG/PNG, max 2 MB) which will show in the navbar.' },
+    { Icon: Lock, title: 'Security', desc: 'Change your password from the Profile page. Your session is protected — you\'ll be redirected to login if not authenticated. Logout from the sidebar at any time.' },
 ];
 
 const FAQS = [
@@ -56,7 +57,7 @@ export default function Help() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {HELP_CARDS.map(card => (
                     <div key={card.title} className="bg-surface rounded-2xl !p-6 shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <img src={card.icon} alt="" className="w-8 h-8 !mb-2 block opacity-80" style={{ filter: 'brightness(0)' }} />
+                        <card.Icon size={32} className="!mb-2 block opacity-80" />
                         <h3 className="text-[15px] font-bold mb-2 m-0">{card.title}</h3>
                         <p className="text-[13px] text-muted leading-relaxed m-0">{card.desc}</p>
                     </div>
