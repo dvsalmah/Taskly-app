@@ -1,5 +1,6 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
+import { Mail } from 'lucide-react';
 
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -31,7 +32,7 @@ export default function ForgotPassword({ status }) {
                 <form onSubmit={submit} className="flex flex-col gap-5">
                     <div>
                         <div className="relative flex items-center">
-                            <img src="/assets/mail.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <Mail size={20} className="absolute left-4 opacity-40" />
                             <input
                                 id="email"
                                 type="email"

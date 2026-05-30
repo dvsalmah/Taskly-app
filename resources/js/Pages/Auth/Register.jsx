@@ -2,25 +2,13 @@ import { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import AnimatedTask from '@/Components/AnimatedTask';
+import { UserRoundPen, Mail, Lock, Eye, EyeOff as EyeOffIcon, User } from 'lucide-react';
 
 function EyeOpen() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-            <circle cx="12" cy="12" r="3" />
-        </svg>
-    );
+    return <Eye size={18} />;
 }
 function EyeOff() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-            <line x1="1" y1="1" x2="23" y2="23" />
-        </svg>
-    );
+    return <EyeOffIcon size={18} />;
 }
 
 function strengthInfo(password) {
@@ -88,7 +76,7 @@ const Register = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <div className="relative flex items-center">
-                                <img src="/assets/username.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                                <UserRoundPen size={20} className="absolute left-4 opacity-40" />
                                 <input 
                                     type="text" 
                                     placeholder="First Name"
@@ -102,7 +90,7 @@ const Register = () => {
                         </div>
                         <div>
                             <div className="relative flex items-center">
-                                <img src="/assets/username.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                                <UserRoundPen size={20} className="absolute left-4 opacity-40" />
                                 <input 
                                     type="text" 
                                     placeholder="Last Name"
@@ -118,7 +106,7 @@ const Register = () => {
                     {/* Email */}
                     <div>
                         <div className="relative flex items-center ">
-                            <img src="/assets/mail.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <Mail size={20} className="absolute left-4 opacity-40" />
                             <input 
                                 type="email" 
                                 placeholder="Email Address"
@@ -133,7 +121,7 @@ const Register = () => {
                     {/* Username */}
                     <div>
                         <div className="relative flex items-center">
-                            <svg className="absolute left-4 w-5 h-5 opacity-40 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <User size={20} className="absolute left-4 opacity-40 text-gray-500" />
                             <input 
                                 type="text" 
                                 placeholder="Username"
@@ -148,7 +136,7 @@ const Register = () => {
                     {/* Password */}
                     <div>
                         <div className="relative flex items-center">
-                            <img src="/assets/password.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <Lock size={20} className="absolute left-4 opacity-40" />
                             <input 
                                 type={showPw ? 'text' : 'password'} 
                                 placeholder="Password"
@@ -183,7 +171,7 @@ const Register = () => {
                     {/* Confirm Password */}
                     <div>
                         <div className="relative flex items-center">
-                            <img src="/assets/password.svg" alt="" className="absolute left-4 w-5 h-5 opacity-40" />
+                            <Lock size={20} className="absolute left-4 opacity-40" />
                             <input 
                                 type={showCfm ? 'text' : 'password'} 
                                 placeholder="Confirm Password"
