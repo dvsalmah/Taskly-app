@@ -44,7 +44,17 @@ function VitalCard({ task }) {
             {/* Bagian Kiri: Teks & Barisan Badge */}
             <div className="flex-1 flex flex-col gap-1 min-w-0 w-full">
                 
-                <h4 className="text-[15px] font-bold text-ink truncate m-0">{task.title}</h4>
+                <div className="flex items-center gap-1.5">
+                    <h4 className="text-[15px] font-bold text-ink truncate m-0">{task.title}</h4>
+                    {task.is_collab && (
+                        <img
+                            src="/assets/group.svg"
+                            alt="collab"
+                            title="Collab task"
+                            className="w-4 h-4 shrink-0 opacity-50"
+                        />
+                    )}
+                </div>
                 
                 {task.description && (
                     <p className="text-[13px] text-muted line-clamp-1 m-0 mb-0.5">{task.description}</p>

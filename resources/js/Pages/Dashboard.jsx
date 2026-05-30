@@ -56,6 +56,14 @@ function TaskItem({ task }) {
             <h4 className="text-[13px] font-semibold text-ink flex items-center gap-1.5 mb-1 line-clamp-1">
                 {task.is_vital && <img src="/assets/fire.svg" alt="vital" className="w-4 h-4" />}
                 {task.title}
+                {task.is_collab && (
+                    <img
+                        src="/assets/group.svg"
+                        alt="collab"
+                        title="Collab task"
+                        className="w-3.5 h-3.5 shrink-0 opacity-50 ml-0.5"
+                    />
+                )}
             </h4>
             {task.description && (
                 <p className="text-[12px] text-muted line-clamp-2 mb-1.5">{task.description}</p>

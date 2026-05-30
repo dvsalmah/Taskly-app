@@ -12,7 +12,14 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $user  = $request->user();
-        $tasks = $user->tasks()->with('category')->get();
+        
+        $ownTasks = $user->tasks()->with('category', 'collaborators')->get()
+            ->map(fn($t) => $this->formatTask($t, true));
+        $collabTasks = $user->collaboratingTasks()->with('category', 'collaborators')->get()
+            ->map(fn($t) => $this->formatTask($t, false));
+
+        $tasks = collect()->merge($ownTasks)->merge($collabTasks);
+
         $total     = $tasks->count();
         $completed = $tasks->where('status', 'completed')->count();
         $inProg    = $tasks->where('status', 'in_progress')->count();
@@ -25,16 +32,14 @@ class DashboardController extends Controller
         $todoTasks = $tasks->where('status', '!=', 'completed')
             ->sortByDesc('created_at')
             ->take(5)
-            ->values()
-            ->map(fn($t) => $this->formatTask($t));
+            ->values();
 
         $totalTodo = $tasks->where('status', '!=', 'completed')->count();
 
         $doneTasks = $tasks->where('status', 'completed')
             ->sortByDesc('created_at')
             ->take(5)
-            ->values()
-            ->map(fn($t) => $this->formatTask($t));
+            ->values();
 
         return Inertia::render('Dashboard', [
             'stats' => [
@@ -52,8 +57,10 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function formatTask($task): array
+    private function formatTask($task, bool $isOwn): array
     {
+        $isCollab = $task->collaborators()->exists() || !$isOwn;
+
         return [
             'id'           => $task->id,
             'title'        => $task->title,
@@ -62,6 +69,8 @@ class DashboardController extends Controller
             'priority'     => $task->priority,
             'deadline'     => $task->deadline?->format('Y-m-d H:i:s'),
             'is_vital'     => $task->is_vital,
+            'is_collab'    => $isCollab,
+            'is_author'    => $isOwn,
             'created_at'   => $task->created_at?->toIso8601String(),
             'updated_at'   => $task->updated_at?->toIso8601String(),
             'category'     => $task->category ? [
