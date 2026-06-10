@@ -22,7 +22,7 @@ class TaskController extends Controller
             ->sortByDesc('created_at')
             ->values();
 
-        return Inertia::render('MyTask', [
+        return Inertia::render('MyTask/index', [
             'tasks'      => $formatted,
             'categories' => $categories->map(fn($c) => [
                 'id'    => $c->id,
