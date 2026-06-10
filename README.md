@@ -24,6 +24,12 @@
 
 **Taskly** is a full-stack task management application that helps users organize their personal tasks and collaborate with others in real time. Taskly offers a clean, responsive interface with a premium design — featuring dark-accented aesthetics, micro-animations, and intuitive workflows.
 
+### 👥 Team Members (PAW TIF-B Kelompok 7)
+- **Dealova Nabila Salmah** (245150201111048)
+- **Najma Zahira** (245150207111056)
+- **Niquita Aislam Az Zahra** (245150207111057)
+- **Shafiyyah Daniswara Nurwijayanti** (245150207111056)
+
 ---
 
 ## ✨ Features
@@ -163,68 +169,25 @@ php artisan serve
 
 ## 📁 Project Structure
 
-```
-taskly-app/
+```text
 ├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Auth/                   # Login, Register, Password reset
-│   │   │   ├── CategoryController.php  # Task category CRUD
-│   │   │   ├── CollabController.php    # Join requests, notifications, accept/decline
-│   │   │   ├── DashboardController.php # Dashboard stats
-│   │   │   ├── HelpController.php      # Help page
-│   │   │   ├── ProfileController.php   # Profile view & update
-│   │   │   ├── TaskController.php      # Task CRUD + collab task loading
-│   │   │   └── VitalTaskController.php # Vital task toggle & view
-│   │   └── Requests/
-│   │       └── ProfileUpdateRequest.php
-│   └── Models/
-│       ├── Category.php
-│       ├── Task.php                    # Relationships, referral code generator
-│       ├── TaskInvitation.php          # Collab join request model
-│       └── User.php
-│
+│   ├── Http/Controllers/    # Laravel controllers
+│   ├── Models/              # Eloquent models
+│   └── Providers/           # Service providers
 ├── database/
-│   └── migrations/
-│       ├── create_users_table.php
-│       ├── create_categories_table.php
-│       ├── create_tasks_table.php
-│       ├── add_referral_code_to_tasks_table.php
-│       ├── create_task_collaborators_table.php  # Pivot: user ↔ task
-│       └── create_task_invitations_table.php    # Join request records
-│
+│   └── migrations/          # Database schema
 ├── resources/
-│   └── js/
-│       ├── Components/
-│       │   ├── Badge.jsx               # Priority/status/vital badges
-│       │   ├── DeleteConfirmOverlay.jsx
-│       │   ├── JoinTaskModal.jsx       # Collab referral code input modal
-│       │   ├── Modal.jsx               # Generic modal wrapper
-│       │   ├── Navbar.jsx              # Top nav with search, notif popover, calendar
-│       │   └── Sidebar.jsx             # Navigation sidebar
-│       ├── Layouts/
-│       │   └── AuthenticatedLayout.jsx
-│       └── Pages/
-│           ├── Auth/                   # Login, Register, ForgotPassword, ResetPassword
-│           ├── Profile/
-│           │   └── Edit.jsx            # Profile settings page
-│           ├── Dashboard.jsx           # Overview & stats
-│           ├── Help.jsx                # FAQ / how-to guide
-│           ├── MyTask.jsx              # Main task board (CRUD + collab)
-│           ├── TaskCategory.jsx        # Category management
-│           ├── VitalTask.jsx           # Vital tasks view
-│           └── Welcome.jsx             # Landing page
-│
-├── routes/
-│   └── web.php                         # All application routes
-│
-├── public/
-│   └── assets/                         # SVG icons, images, logo
-│
-├── .env.example
-├── composer.json
-├── package.json
-└── vite.config.js
+│   ├── js/
+│   │   ├── components/      # React components (Shared, UI, Sidebar, Navbar)
+│   │   ├── constants/       # Global constants
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── Layouts/         # Layout components (AuthenticatedLayout, GuestLayout)
+│   │   ├── lib/             # Utility functions
+│   │   └── Pages/           # Page components (Dashboard, MyTask, Profile, Auth)
+│   └── css/                 # Global styles
+└── routes/
+    ├── web.php              # Web routes
+    └── auth.php             # Authentication routes
 ```
 
 ---
