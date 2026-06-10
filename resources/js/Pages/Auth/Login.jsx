@@ -1,28 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
-import AnimatedTask from '@/Components/AnimatedTask';
-
-import { Eye, EyeOff as EyeOffIcon, Mail, Lock } from 'lucide-react';
-
-function EyeOpen() {
-    return <Eye size={18} />;
-}
-function EyeOff() {
-    return <EyeOffIcon size={18} />;
-}
-
-function MailIcon({ className }) {
-    return <Mail size={20} className={className} />;
-}
-
-function LockIcon({ className }) {
-    return <Lock size={20} className={className} />;
-}
+import AuthInput from '@/components/shared/AuthInput';
+import { Mail, Lock } from 'lucide-react';
 
 const Login = ({ status }) => {
-    const [showPw, setShowPw] = useState(false);
-
     const { data, setData, post, processing, errors, reset } = useForm({
         login: '',
         password: '',
@@ -37,9 +19,9 @@ const Login = ({ status }) => {
     };
 
     return (
-        <>
+        <GuestLayout>
             <Head title="Sign In" />
-            <div className="w-full max-w-md flex flex-col gap-6">
+            <div className="w-full max-w-[340px] sm:max-w-md flex flex-col gap-6">
                 <div className="text-center">
                     <img src="/assets/taskly-HD.png" alt="Taskly Logo" className="flex items-center justify-center h-12 !mx-auto !mb-6" />
                     <h1 className="text-[32px] font-bold text-[#2D2D2D] tracking-tight mb-2">Stay on track!</h1>
@@ -49,51 +31,34 @@ const Login = ({ status }) => {
                 {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 
                 {Object.keys(errors).length > 0 && (
-                    <div className="bg-[#FFEBEE] text-[#C62828] border border-[#EF9A9A] rounded-xl px-4 py-3 text-sm">
+                    <div className="bg-[#FFEBEE] text-[#C62828] border border-[#EF9A9A] rounded-xl !px-4 !py-3 text-sm">
                         Please check your email and password.
                     </div>
                 )}
 
                 <form onSubmit={submit} className="flex flex-col gap-5">
                     <div>
-                        <div className="relative flex items-center">
-                            <div className="absolute left-4 pointer-events-none text-gray-400">
-                                <MailIcon className="w-5 h-5 opacity-80" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Enter Your Email or Username"
-                                value={data.login}
-                                onChange={(e) => setData('login', e.target.value)}
-                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 pr-4 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
-                                required
-                                autoComplete="username"
-                            />
-                        </div>
+                        <AuthInput
+                            icon={Mail}
+                            type="text"
+                            placeholder="Enter Your Email or Username"
+                            value={data.login}
+                            onChange={(e) => setData('login', e.target.value)}
+                            required
+                            autoComplete="username"
+                        />
                     </div>
 
                     <div>
-                        <div className="relative flex items-center">
-                            <div className="absolute left-4 pointer-events-none text-gray-400">
-                                <LockIcon className="w-5 h-5 opacity-80" />
-                            </div>
-                            <input
-                                type={showPw ? 'text' : 'password'}
-                                placeholder="Password"
-                                value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                                className="w-full h-11 border-0 border-b-2 border-gray-300 rounded-xl !pl-12 pr-4 text-sm text-ink bg-fore font-sans outline-none transition-all duration-200 focus:border-pink-dark focus:ring-0 placeholder-gray-400"
-                                required
-                                autoComplete="current-password"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPw(!showPw)}
-                                className="absolute right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
-                            >
-                                {showPw ? <EyeOff /> : <EyeOpen />}
-                            </button>
-                        </div>
+                        <AuthInput
+                            icon={Lock}
+                            type="password"
+                            placeholder="Password"
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            required
+                            autoComplete="current-password"
+                        />
                     </div>
 
                     <div className="flex items-center justify-between mt-1">
@@ -111,9 +76,9 @@ const Login = ({ status }) => {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full flex items-center justify-center bg-pink-dark hover:brightness-110 text-white h-14 rounded-[16px] font-bold text-[15px] transition-all hover:shadow-lg active:scale-[0.98] mt-2"
+                        className="cursor-pointer w-full flex items-center justify-center bg-pink-dark hover:brightness-130 text-white h-14 rounded-[16px] font-bold text-[15px] transition-all hover:shadow-lg active:scale-[0.98] mt-2"
                     >
-                        {processing ? 'Signing In...' : 'Sign In'}
+                        {processing ? 'Signing In' : 'Sign In'}
                     </button>
                 </form>
 
@@ -127,9 +92,8 @@ const Login = ({ status }) => {
                     </Link>
                 </p>
             </div>
-        </>
+        </GuestLayout>
     );
 };
 
-Login.layout = page => <GuestLayout children={page} />;
 export default Login;
