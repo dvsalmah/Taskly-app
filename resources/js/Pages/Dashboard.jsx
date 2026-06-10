@@ -1,19 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import Badge from '@/Components/Badge'; // Pastikan path ini benar di komputermu!
+import Badge from '@/components/Badge';
 import { Flame, UsersRound } from 'lucide-react';
-
-function timeAgoJS(datetimeStr) {
-    if (!datetimeStr) return '';
-    const then = new Date(datetimeStr.replace(' ', 'T'));
-    const diff = Math.floor((Date.now() - then.getTime()) / 1000);
-    if (diff < 60) return 'just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
-    return then.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
+import { timeAgoJS } from '@/lib/dateUtils';
+import { STATUS_BORDER_LEFT_CLASSES } from '@/constants/taskOptions';
 
 function StatCircle({ pct, count, label, color }) {
     const bgMap = { green: 'bg-[#2ecc71]', blue: 'bg-[#3498db]', gray: 'bg-[#95a5a6]' };
@@ -37,23 +28,16 @@ function Card({ className = '', children }) {
 }
 
 function TaskItem({ task }) {
-    const borderClasses = {
-        'completed': 'border-l-[#2ecc71]', 
-        'vital': 'border-l-[#FF6F00]',     
-        'default': 'border-l-[#f48b95]',   
-    };
-
     let colorKey = 'default';
-    
     if (task.status === 'completed') {
-        colorKey = 'completed'; 
+        colorKey = 'completed';
     } else if (task.is_vital) {
-        colorKey = 'vital';     
-    } 
-    const finalBorderClass = borderClasses[colorKey] || borderClasses['default'];
+        colorKey = 'vital';
+    }
+    const borderClass = STATUS_BORDER_LEFT_CLASSES[colorKey] ?? STATUS_BORDER_LEFT_CLASSES.default;
 
     return (
-        <div className={`rounded-2xl border-l-4 bg-fore/70 !px-4 !py-3 !mb-3 ${finalBorderClass}`}>
+        <div className={`rounded-2xl border-l-4 bg-fore/70 !px-4 !py-3 !mb-3 ${borderClass}`}>
             <h4 className="text-[13px] font-semibold text-ink flex items-center gap-1.5 mb-1 line-clamp-1">
                 {task.is_vital && <Flame size={16} className="text-[#FF6F00]" />}
                 {task.title}
@@ -86,11 +70,10 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
             </h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8 w-full">
-                
+
                 {/* Left Column */}
                 <div className="flex flex-col gap-8">
-                    
-                    {/* To-Do Card */}
+                    {/* To-Do */}
                     <Card>
                         <h3 className="text-xl font-bold text-ink flex items-center gap-2 m-0">
                             To-Do
@@ -99,32 +82,25 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
                         {todoTasks.length === 0 ? (
                             <div className="text-center py-8 text-muted text-[13px]">
                                 Congratulations! You have completed all your tasks!{' '}
-                                <Link href="/my-task" className="text-pink-dark font-semibold no-underline hover:underline">
-                                    Add more
-                                </Link>
+                                <Link href="/my-task" className="text-pink-dark font-semibold no-underline hover:underline">Add more</Link>
                             </div>
                         ) : (
                             <div className="flex flex-col">
                                 {todoTasks.map(t => <TaskItem key={t.id} task={t} />)}
-                                
                                 {totalTodo > 5 && (
                                     <p className="text-center mt-2 m-0 text-sm font-semibold">
-                                        <Link href="/my-task" className="text-pink-dark no-underline hover:underline">
-                                            View all tasks
-                                        </Link>
+                                        <Link href="/my-task" className="text-pink-dark no-underline hover:underline">View all tasks</Link>
                                     </p>
                                 )}
                             </div>
                         )}
                     </Card>
 
-                    {/* Recently Completed Card */}
+                    {/* Recently Completed */}
                     <Card>
                         <h3 className="text-xl font-bold text-ink flex items-center m-0">Recently Completed</h3>
                         {doneTasks.length === 0 ? (
-                            <div className="text-center py-8 text-muted text-[13px]">
-                                No completed tasks yet. Keep going!
-                            </div>
+                            <div className="text-center py-8 text-muted text-[13px]">No completed tasks yet. Keep going!</div>
                         ) : (
                             <div className="flex flex-col">
                                 {doneTasks.map(t => <TaskItem key={t.id} task={t} />)}
@@ -135,22 +111,19 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
 
                 {/* Right Column */}
                 <div className="flex flex-col gap-8">
-                    {/* Task Status Card */}
                     <Card>
                         <h3 className="text-xl font-bold text-ink flex items-center !mb-3">Task Status</h3>
                         {stats.total === 0 ? (
                             <div className="text-center py-8 text-muted text-[13px]">
                                 No tasks yet.{' '}
-                                <Link href="/my-task" className="text-pink-dark font-semibold no-underline hover:underline">
-                                    Add one!
-                                </Link>
+                                <Link href="/my-task" className="text-pink-dark font-semibold no-underline hover:underline">Add one!</Link>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 <div className="flex justify-around flex-wrap gap-4 mt-2">
                                     <StatCircle pct={stats.pctCompleted} count={stats.completed} label="Completed" color="green" />
-                                    <StatCircle pct={stats.pctProgress} count={stats.inProgress} label="In Progress" color="blue" />
-                                    <StatCircle pct={stats.pctNotStart} count={stats.notStarted} label="Not Started" color="gray" />
+                                    <StatCircle pct={stats.pctProgress}  count={stats.inProgress} label="In Progress" color="blue" />
+                                    <StatCircle pct={stats.pctNotStart}  count={stats.notStarted} label="Not Started" color="gray" />
                                 </div>
                                 <p className="text-center text-[12px] text-pink-dark font-semibold m-0">
                                     {stats.total} total task{stats.total !== 1 ? 's' : ''}
@@ -159,7 +132,6 @@ export default function Dashboard({ stats, todoTasks, totalTodo, doneTasks }) {
                         )}
                     </Card>
                 </div>
-
             </div>
         </AuthenticatedLayout>
     );
