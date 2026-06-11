@@ -11,7 +11,7 @@ class Category extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'username', 'name', 'color'];
+    protected $fillable = ['user_id', 'name', 'color'];
 
     public function user()
     {

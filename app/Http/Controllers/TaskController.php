@@ -44,7 +44,6 @@ class TaskController extends Controller
         ]);
 
         $data['referral_code'] = Task::generateReferralCode();
-        $data['username']      = $request->user()->username;
 
         $request->user()->tasks()->create($data);
 
