@@ -35,7 +35,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
         ];
     }
 
@@ -46,7 +45,7 @@ class User extends Authenticatable
 
     public function categories()
     {
-        return $this->hasMany(Category::class, 'username', 'username');
+        return $this->hasMany(Category::class);
     }
 
     public function collaboratingTasks()
@@ -68,7 +67,7 @@ class User extends Authenticatable
     public function getPhotoUrlAttribute(): string
     {
         if (empty($this->photo)) {
-            return 'https://i.pravatar.cc/150?img=8';
+            return '/assets/avatar.png';
         }
         if (str_starts_with($this->photo, 'http')) {
             return $this->photo;

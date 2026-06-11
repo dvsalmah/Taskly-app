@@ -162,7 +162,7 @@ export default function Navbar({ user }) {
         setNotifOpen(true);
     };
 
-    const photoUrl = user?.photo_url || 'https://i.pravatar.cc/150?img=8';
+    const photoUrl = user?.photo_url || '/assets/avatar.png';
     const todayStr = new Date().toLocaleDateString('en-GB', {
         weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
     });
