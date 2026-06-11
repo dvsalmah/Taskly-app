@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import AnimatedTask from '@/Components/AnimatedTask';
+import AnimatedTask from '@/components/AnimatedTask';
 
 export default function GuestLayout({ children }) {
     const { url } = usePage();

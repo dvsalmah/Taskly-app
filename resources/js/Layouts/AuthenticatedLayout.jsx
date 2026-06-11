@@ -1,6 +1,6 @@
 import { SidebarProvider, useSidebar } from '@/components/ui/sidebar';
-import Sidebar from '@/Components/Sidebar';
-import Navbar from '@/Components/Navbar';
+import Sidebar from '@/components/Sidebar';
+import Navbar from '@/components/Navbar';
 import { usePage } from '@inertiajs/react';
 
 export default function AuthenticatedLayout({ children }) {
