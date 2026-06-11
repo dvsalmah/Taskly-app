@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import AuthInput from '@/components/shared/AuthInput';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { UserRoundPen, Mail, Lock, Link as LinkIcon } from 'lucide-react';
+import { UserRoundPen, User, Mail, Lock } from 'lucide-react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -27,7 +27,7 @@ export default function Register() {
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Create Account" />
             
             <div className="w-full max-w-[340px] sm:max-w-lg flex flex-col gap-5 lg:gap-6 py-2">
@@ -54,6 +54,7 @@ export default function Register() {
                         </div>
                         <div className="flex flex-col gap-1">
                             <AuthInput 
+                                icon={UserRoundPen}
                                 type="text" 
                                 placeholder="Last Name"
                                 value={data.last_name} 
@@ -67,7 +68,7 @@ export default function Register() {
                     {/* Username */}
                     <div className="flex flex-col gap-1">
                         <AuthInput 
-                            icon={LinkIcon}
+                            icon={User}
                             type="text" 
                             placeholder="Username"
                             value={data.username} 
@@ -154,6 +155,8 @@ export default function Register() {
                     </Link>
                 </p>
             </div>
-        </GuestLayout>
+        </>
     );
 }
+
+Register.layout = page => <GuestLayout children={page} />;

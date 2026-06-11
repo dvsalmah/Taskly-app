@@ -19,7 +19,7 @@ const Login = ({ status }) => {
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Sign In" />
             <div className="w-full max-w-[340px] sm:max-w-md flex flex-col gap-6">
                 <div className="text-center">
@@ -92,8 +92,10 @@ const Login = ({ status }) => {
                     </Link>
                 </p>
             </div>
-        </GuestLayout>
+        </>
     );
 };
+
+Login.layout = page => <GuestLayout children={page} />;
 
 export default Login;
