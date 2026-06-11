@@ -10,14 +10,11 @@ return new class extends Migration
     {
         Schema::create('task_invitations', function (Blueprint $table) {
             $table->id();
-            $table->integer('task_id');
-            $table->integer('requester_id');
+            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
             $table->boolean('read')->default(false);
             $table->timestamps();
-
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
-            $table->foreign('requester_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
