@@ -3,6 +3,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import AuthInput from '@/components/shared/AuthInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { UserRoundPen, User, Mail, Lock } from 'lucide-react';
+import ConfirmPassword from './ConfirmPassword';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -33,8 +34,8 @@ export default function Register() {
             <div className="w-full max-w-[340px] sm:max-w-lg flex flex-col gap-5 lg:gap-6 py-2">
                 <div className="text-center">
                     <img src="/assets/taskly-HD.png" alt="Taskly Logo" className="flex items-center justify-center h-[42px] lg:h-12 !mx-auto !mb-4 lg:!mb-6" />
-                    <h1 className="text-[26px] lg:text-[32px] font-bold text-[#2D2D2D] tracking-tight mb-1.5 lg:mb-2">Create an account</h1>
-                    <p className="text-gray-500 text-[14px] lg:text-[15px]">Sign up now and start managing your tasks</p>
+                    <h1 className="text-[26px] lg:text-[32px] font-bold text-[#2D2D2D] tracking-tight mb-1.5 lg:mb-2">Get Started!</h1>
+                    <p className="text-gray-500 text-[14px] lg:text-[15px]">Start your productive journey</p>
                 </div>
 
                 <form onSubmit={submit} className="flex flex-col gap-4 lg:gap-5">
@@ -103,6 +104,7 @@ export default function Register() {
                                 required 
                             />
                             {errors.password && <span className="text-[#C62828] text-xs font-medium ml-1">{errors.password}</span>}
+                            <ConfirmPassword password={data.password} />
                         </div>
                         <div className="flex flex-col gap-1">
                             <AuthInput 
@@ -116,6 +118,7 @@ export default function Register() {
                             {errors.password_confirmation && <span className="text-[#C62828] text-xs font-medium ml-1">{errors.password_confirmation}</span>}
                         </div>
                     </div>
+                    <p className="text-xs text-gray-500">Password must be at least 8 characters long and contain uppercase letter, lowercase letter, number, and special character</p>
 
                     {/* Terms */}
                     <div className="flex items-start gap-2.5 mt-1.5">
