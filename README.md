@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="180" />
-  <img src="public/assets/taskly-1.png" alt="Taskly preview" width="100" />
+  <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="250" />
+  <img src="public/assets/taskly-1.png" alt="Taskly preview" width="300" />
 </p>
 
 <h1 align="center">Taskly</h1>
