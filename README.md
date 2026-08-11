@@ -1,5 +1,6 @@
 <p align="center">
   <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="180" />
+  <img src="public/assets/preview-1.png" alt="Taskly preview" width="100" />
 </p>
 
 <h1 align="center">Taskly</h1>
@@ -23,12 +24,6 @@
 ## 📖 About
 
 **Taskly** is a full-stack task management application that helps users organize their personal tasks and collaborate with others in real time. Taskly offers a clean, responsive interface with a premium design — featuring dark-accented aesthetics, micro-animations, and intuitive workflows.
-
-### 👥 Team Members (PAW TIF-B Kelompok 7)
-- **Dealova Nabila Salmah** (245150201111048)
-- **Najma Zahira** (245150207111056)
-- **Niquita Aislam Az Zahra** (245150207111057)
-- **Shafiyyah Daniswara Nurwijayanti** (245150207111056)
 
 ---
 
