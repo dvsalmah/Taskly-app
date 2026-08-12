@@ -1,9 +1,9 @@
-<p align="center">
+<div style="display:flex; align-items:center; justify-content:center; gap:20px">
   <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="250" />
-  <img src="public/assets/taskly-1.png" alt="Taskly preview" width="300" />
-</p>
+  <img src="public/assets/taskly-1.png" alt="Taskly preview" height="200" />
+</div>
 
-<h1 align="center">Taskly</h1>
+<h1 align="center" style="margin-top:20px;">Taskly</h1>
 
 <p align="center">
   <b>A modern, collaborative task management web application.</b><br/>
@@ -19,13 +19,9 @@
   <img src="https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php" />
 </p>
 
----
-
 ## 📖 About
 
 **Taskly** is a full-stack task management application that helps users organize their personal tasks and collaborate with others in real time. Taskly offers a clean, responsive interface with a premium design — featuring dark-accented aesthetics, micro-animations, and intuitive workflows.
-
----
 
 ## ✨ Features
 
@@ -68,7 +64,6 @@
 - Fully custom-styled auth pages matching the Taskly design system
 - Password visibility toggle on all password inputs
 
----
 
 ## 🛠️ Tech Stack
 
@@ -84,7 +79,7 @@
 | **Typography** | [Geist Variable](https://vercel.com/font) |
 | **UI Primitives** | Base UI, Headless UI |
 
----
+
 
 ## 🚀 Getting Started
 
@@ -135,7 +130,7 @@ php artisan migrate
 php artisan storage:link
 ```
 
----
+
 
 ### Running Locally
 
@@ -151,7 +146,6 @@ npm run dev
 
 The app will be available at **http://localhost:8000**
 
----
 
 ### Production Build
 
@@ -160,7 +154,7 @@ npm run build
 php artisan serve
 ```
 
----
+
 
 ## 📁 Project Structure
 
@@ -185,7 +179,6 @@ php artisan serve
     └── auth.php             # Authentication routes
 ```
 
----
 
 ## 🗄️ Database Schema
 
@@ -197,11 +190,8 @@ task_collaborators  — task_id, user_id  (pivot)
 task_invitations    — id, task_id, requester_id, status (pending|accepted|declined), read
 ```
 
----
 
 
 ## 📄 License
 
-This project is open-sourced under the [MIT License](LICENSE).
-
----
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
