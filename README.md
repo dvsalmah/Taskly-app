@@ -1,7 +1,8 @@
-<div style="display:flex; align-items:center; justify-content:center; gap:20px">
-  <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="250" />
-  <img src="public/assets/taskly-1.png" alt="Taskly preview" height="200" />
-</div>
+<p align="center">
+  <img src="public/assets/taskly-HD.png" alt="Taskly Logo" width="250" align="middle">
+  &nbsp;&nbsp;&nbsp;
+  <img src="public/assets/taskly-1.png" alt="Taskly Preview" height="200" align="middle" >
+</p>
 
 <h1 align="center" style="margin-top:20px;">Taskly</h1>
 
